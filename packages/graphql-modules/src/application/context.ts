@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from 'async_hooks';
 import { Injector, ReflectiveInjector } from '../di';
 import { ResolvedProvider } from '../di/resolution';
 import { ID } from '../shared/types';
@@ -6,11 +7,22 @@ import type { InternalAppContext, ModulesMap } from './application';
 import { attachGlobalProvidersMap } from './di';
 import { CONTEXT } from './tokens';
 
+const alc = new AsyncLocalStorage<{
+  getApplicationContext(): GraphQLModules.AppContext;
+  getModuleContext(moduleId: string): GraphQLModules.ModuleContext;
+}>();
+
 export type ExecutionContextBuilder<
   TContext extends {
     [key: string]: any;
   } = {},
-> = (context: TContext) => {
+> = (context: TContext) => ExecutionContextEnv & {
+  runWithContext<TReturn = any>(
+    cb: (env: ExecutionContextEnv) => TReturn
+  ): TReturn;
+};
+
+export type ExecutionContextEnv = {
   context: InternalAppContext;
   ɵdestroy(): void;
   ɵinjector: Injector;
@@ -67,12 +79,15 @@ export function createContextBuilder({
     });
 
     appInjector.setExecutionContextGetter(function executionContextGetter() {
-      return appContext;
+      return alc.getStore()?.getApplicationContext() || appContext;
     } as any);
 
     function createModuleExecutionContextGetter(moduleId: string) {
       return function moduleExecutionContextGetter() {
-        return getModuleContext(moduleId, context);
+        return (
+          alc.getStore()?.getModuleContext(moduleId) ||
+          getModuleContext(moduleId, context)
+        );
       };
     }
 
@@ -164,7 +179,7 @@ export function createContextBuilder({
       },
     });
 
-    return {
+    const env: ExecutionContextEnv = {
       ɵdestroy: once(() => {
         providersToDestroy.forEach(([injector, keyId]) => {
           // If provider was instantiated
@@ -177,6 +192,23 @@ export function createContextBuilder({
       }),
       ɵinjector: operationAppInjector,
       context: sharedContext,
+    };
+
+    return {
+      ...env,
+      runWithContext(cb) {
+        return alc.run(
+          {
+            getApplicationContext() {
+              return appContext;
+            },
+            getModuleContext(moduleId) {
+              return getModuleContext(moduleId, context);
+            },
+          },
+          () => cb(env)
+        );
+      },
     };
   };
 

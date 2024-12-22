@@ -13,6 +13,7 @@ import {
 } from '../shared/utils';
 import { ExecutionContextBuilder } from './context';
 import { Application } from './types';
+import { InternalAppContext } from './application';
 
 export function subscriptionCreator({
   contextBuilder,
@@ -33,51 +34,59 @@ export function subscriptionCreator({
       fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
       subscribeFieldResolver?: Maybe<GraphQLFieldResolver<any, any>>
     ) => {
-      // Create an subscription context
-      const { context, ɵdestroy: destroy } =
-        options?.controller ??
-        contextBuilder(
+      function perform({
+        context,
+        ɵdestroy: destroy,
+      }: {
+        context: InternalAppContext;
+        ɵdestroy: () => void;
+      }) {
+        const subscriptionArgs: SubscriptionArgs =
           isNotSchema<SubscriptionArgs>(argsOrSchema)
-            ? argsOrSchema.contextValue
-            : contextValue
-        );
+            ? {
+                ...argsOrSchema,
+                contextValue: context,
+              }
+            : {
+                schema: argsOrSchema,
+                document: document!,
+                rootValue,
+                contextValue: context,
+                variableValues,
+                operationName,
+                fieldResolver,
+                subscribeFieldResolver,
+              };
 
-      const subscriptionArgs: SubscriptionArgs = isNotSchema<SubscriptionArgs>(
-        argsOrSchema
-      )
-        ? {
-            ...argsOrSchema,
-            contextValue: context,
-          }
-        : {
-            schema: argsOrSchema,
-            document: document!,
-            rootValue,
-            contextValue: context,
-            variableValues,
-            operationName,
-            fieldResolver,
-            subscribeFieldResolver,
-          };
+        let isIterable = false;
 
-      let isIterable = false;
+        // It's important to wrap the subscribeFn within a promise
+        // so we can easily control the end of subscription (with finally)
+        return Promise.resolve()
+          .then(() => subscribeFn(subscriptionArgs))
+          .then((sub) => {
+            if (isAsyncIterable(sub)) {
+              isIterable = true;
+              return tapAsyncIterator(sub, destroy);
+            }
+            return sub;
+          })
+          .finally(() => {
+            if (!isIterable) {
+              destroy();
+            }
+          });
+      }
 
-      // It's important to wrap the subscribeFn within a promise
-      // so we can easily control the end of subscription (with finally)
-      return Promise.resolve()
-        .then(() => subscribeFn(subscriptionArgs))
-        .then((sub) => {
-          if (isAsyncIterable(sub)) {
-            isIterable = true;
-            return tapAsyncIterator(sub, destroy);
-          }
-          return sub;
-        })
-        .finally(() => {
-          if (!isIterable) {
-            destroy();
-          }
-        });
+      if (options?.controller) {
+        return perform(options.controller);
+      }
+
+      return contextBuilder(
+        isNotSchema<SubscriptionArgs>(argsOrSchema)
+          ? argsOrSchema.contextValue
+          : contextValue
+      ).runWithContext(perform);
     };
   };
 
