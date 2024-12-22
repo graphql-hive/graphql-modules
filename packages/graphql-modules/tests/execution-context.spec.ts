@@ -809,11 +809,9 @@ test('accessing a singleton provider context after another asynchronous executio
     }
   }
 
-  const { promise: gettingBefore, resolve: gotBefore } =
-    Promise.withResolvers<void>();
+  const { promise: gettingBefore, resolve: gotBefore } = createDeferred();
 
-  const { promise: waitForGettingAfter, resolve: getAfter } =
-    Promise.withResolvers<void>();
+  const { promise: waitForGettingAfter, resolve: getAfter } = createDeferred();
 
   const mod = createModule({
     id: 'mod',
@@ -894,3 +892,16 @@ test('accessing a singleton provider context after another asynchronous executio
     },
   });
 });
+
+function createDeferred<T = void>() {
+  let resolve!: (val: T) => void, reject!: (err: unknown) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return {
+    promise,
+    resolve,
+    reject,
+  };
+}
