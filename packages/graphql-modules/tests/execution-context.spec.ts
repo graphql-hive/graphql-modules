@@ -798,3 +798,99 @@ test('accessing a singleton provider with execution context in another singleton
     });
   }
 });
+
+test('accessing a singleton provider context after another asynchronous execution', async () => {
+  @Injectable({ scope: Scope.Singleton })
+  class IdentifierProvider {
+    @ExecutionContext()
+    private context: any;
+    getId() {
+      return this.context.identifier;
+    }
+  }
+
+  const { promise: gettingBefore, resolve: gotBefore } =
+    Promise.withResolvers<void>();
+
+  const { promise: waitForGettingAfter, resolve: getAfter } =
+    Promise.withResolvers<void>();
+
+  const mod = createModule({
+    id: 'mod',
+    providers: [IdentifierProvider],
+    typeDefs: gql`
+      type Query {
+        getAsyncIdentifiers: Identifiers!
+      }
+
+      type Identifiers {
+        before: String!
+        after: String!
+      }
+    `,
+    resolvers: {
+      Query: {
+        async getAsyncIdentifiers(
+          _0: unknown,
+          _1: unknown,
+          context: GraphQLModules.Context
+        ) {
+          const before = context.injector.get(IdentifierProvider).getId();
+          gotBefore();
+          await waitForGettingAfter;
+          const after = context.injector.get(IdentifierProvider).getId();
+          return { before, after };
+        },
+      },
+    },
+  });
+
+  const app = createApplication({
+    modules: [mod],
+  });
+
+  const document = gql`
+    {
+      getAsyncIdentifiers {
+        before
+        after
+      }
+    }
+  `;
+
+  const firstResult$ = testkit.execute(app, {
+    contextValue: {
+      identifier: 'first',
+    },
+    document,
+  });
+
+  await gettingBefore;
+
+  const secondResult$ = testkit.execute(app, {
+    contextValue: {
+      identifier: 'second',
+    },
+    document,
+  });
+
+  getAfter();
+
+  await expect(firstResult$).resolves.toEqual({
+    data: {
+      getAsyncIdentifiers: {
+        before: 'first',
+        after: 'first',
+      },
+    },
+  });
+
+  await expect(secondResult$).resolves.toEqual({
+    data: {
+      getAsyncIdentifiers: {
+        before: 'second',
+        after: 'second',
+      },
+    },
+  });
+});
