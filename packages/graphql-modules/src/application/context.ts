@@ -206,7 +206,8 @@ export function createContextBuilder({
               return getModuleContext(moduleId, context);
             },
           },
-          () => cb(env)
+          cb,
+          env
         );
       },
     };
