@@ -1,16 +1,11 @@
-import { AsyncLocalStorage } from 'async_hooks';
 import { Injector, ReflectiveInjector } from '../di';
 import { ResolvedProvider } from '../di/resolution';
 import { ID } from '../shared/types';
 import { once, merge } from '../shared/utils';
 import type { InternalAppContext, ModulesMap } from './application';
+import { getAsyncContext, runWithAsyncContext } from './async-context';
 import { attachGlobalProvidersMap } from './di';
 import { CONTEXT } from './tokens';
-
-const alc = new AsyncLocalStorage<{
-  getApplicationContext(): GraphQLModules.AppContext;
-  getModuleContext(moduleId: string): GraphQLModules.ModuleContext;
-}>();
 
 export type ExecutionContextBuilder<
   TContext extends {
@@ -79,13 +74,13 @@ export function createContextBuilder({
     });
 
     appInjector.setExecutionContextGetter(function executionContextGetter() {
-      return alc.getStore()?.getApplicationContext() || appContext;
+      return getAsyncContext()?.getApplicationContext() || appContext;
     } as any);
 
     function createModuleExecutionContextGetter(moduleId: string) {
       return function moduleExecutionContextGetter() {
         return (
-          alc.getStore()?.getModuleContext(moduleId) ||
+          getAsyncContext()?.getModuleContext(moduleId) ||
           getModuleContext(moduleId, context)
         );
       };
@@ -197,7 +192,7 @@ export function createContextBuilder({
     return {
       ...env,
       runWithContext(cb) {
-        return alc.run(
+        return runWithAsyncContext(
           {
             getApplicationContext() {
               return appContext;
