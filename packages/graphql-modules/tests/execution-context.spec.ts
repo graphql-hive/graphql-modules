@@ -799,7 +799,7 @@ test('accessing a singleton provider with execution context in another singleton
   }
 });
 
-test('accessing a singleton provider context after another asynchronous execution', async () => {
+test('accessing a singleton provider context during another asynchronous execution', async () => {
   @Injectable({ scope: Scope.Singleton })
   class IdentifierProvider {
     @ExecutionContext()
