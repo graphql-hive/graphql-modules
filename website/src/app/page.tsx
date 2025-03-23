@@ -39,7 +39,7 @@ export default function IndexPage() {
         </CallToAction>
         <CallToAction
           variant="tertiary"
-          href="https://github.com/Urigo/graphql-modules"
+          href="https://github.com/graphql-hive/graphql-modules"
         >
           <GitHubIcon className="size-6" />
           GitHub

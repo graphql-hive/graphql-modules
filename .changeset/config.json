@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/@changesets/config@2.1.0/schema.json",
   "changelog": [
     "@changesets/changelog-github",
-    { "repo": "urigo/graphql-modules" }
+    { "repo": "graphql-hive/graphql-modules" }
   ],
   "commit": false,
   "linked": [],

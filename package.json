@@ -73,6 +73,9 @@
     "typescript": "5.8.2",
     "ws": "8.18.1"
   },
+  "resolutions": {
+    "rollup": "2.79.2"
+  },
   "prettier": {
     "trailingComma": "es5",
     "semi": true,

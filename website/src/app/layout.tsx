@@ -38,7 +38,7 @@ const RootLayout: FC<{
       logo={logo}
       layoutProps={{
         docsRepositoryBase:
-          'https://github.com/Urigo/graphql-modules/tree/master/website',
+          'https://github.com/graphql-hive/graphql-modules/tree/master/website',
         footer: (
           <HiveFooter
             logo={
@@ -77,7 +77,7 @@ const RootLayout: FC<{
             children: 'Blog',
           },
           {
-            href: 'https://github.com/Urigo/graphql-modules',
+            href: 'https://github.com/graphql-hive/graphql-modules',
             icon: <GitHubIcon />,
             children: 'GitHub',
           },
