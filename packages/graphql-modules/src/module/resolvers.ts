@@ -5,6 +5,7 @@ import {
   defaultFieldResolver,
   FieldNode,
   GraphQLResolveInfo,
+  isScalarType,
 } from 'graphql';
 import { Resolvers, ModuleConfig } from './types';
 import { ModuleMetadata } from './metadata';
@@ -508,7 +509,7 @@ function isResolveOptions(value: any): value is ResolveOptions {
 }
 
 function isScalarResolver(obj: any): obj is GraphQLScalarType {
-  return obj instanceof GraphQLScalarType;
+  return isScalarType(obj);
 }
 
 interface EnumResolver {
