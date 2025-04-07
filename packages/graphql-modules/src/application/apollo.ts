@@ -1,5 +1,5 @@
 import { wrapSchema } from '@graphql-tools/wrap';
-import { DocumentNode, execute, GraphQLSchema } from 'graphql';
+import { DocumentNode, execute, ExecutionArgs, GraphQLSchema } from 'graphql';
 import { uniqueId } from '../shared/utils';
 import { InternalAppContext } from './application';
 import { ExecutionContextBuilder } from './context';
@@ -47,7 +47,9 @@ export function apolloSchemaCreator({
   contextBuilder: ExecutionContextBuilder;
   schema: GraphQLSchema;
 }) {
-  const createApolloSchema = () => {
+  const createApolloSchema = ({
+    fieldResolver,
+  }: Pick<ExecutionArgs, 'fieldResolver'> = {}) => {
     const sessions: Record<
       string,
       {
@@ -114,6 +116,7 @@ export function apolloSchemaCreator({
                 variableValues: input.variables as any,
                 rootValue: input.rootValue,
                 operationName: input.operationName,
+                fieldResolver,
               }) as any
           )
           .finally(destroy);
