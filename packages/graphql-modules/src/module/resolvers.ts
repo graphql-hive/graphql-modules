@@ -258,6 +258,13 @@ function addObject({
     if (fields.hasOwnProperty(fieldName)) {
       const resolver = fields[fieldName];
 
+      if(typeof resolver === 'undefined'){
+         throw new ResolverDuplicatedError(
+            `Resolver not implement of "${typeName}.${fieldName}"`,
+            useLocation({ dirname: config.dirname, id: config.id })
+          );
+      }
+
       if (isResolveFn(resolver)) {
         if (container[typeName][fieldName]) {
           throw new ResolverDuplicatedError(
