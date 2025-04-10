@@ -5112,9 +5112,9 @@
   integrity sha512-AySf2kV6OHvwgD3DrLdT2az2g4hRdoRtKsFCLdZo3jOoKte+ft/IQJEnOW7CPT0RYUskS3elv6eabYgSyTH4tg==
 
 "@theguild/components@^9.1.2":
-  version "9.4.1"
-  resolved "https://registry.yarnpkg.com/@theguild/components/-/components-9.4.1.tgz#da4c7f3dc6a8c4316ea9fc2a6dcc01967ec2427d"
-  integrity sha512-eD1d6Ycg7GBwVQ2Wxs3mKEGkvUK02en/r9bWKx3smJhmXZ5H+HXj4FkNcsYvQdcXfa4szoowomLThXzKXKfxCA==
+  version "9.7.1"
+  resolved "https://registry.yarnpkg.com/@theguild/components/-/components-9.7.1.tgz#f9a08fb6f40f5080d3890a6ee542536873af98c5"
+  integrity sha512-70i8aHV2dAachECiywmg0cGTPhCDnZ1juE4N49WskSy2CSFPXqKI/Jey0qe2fRapMNyURXj/kqOmaaZS9JHhAg==
   dependencies:
     "@giscus/react" "3.1.0"
     "@next/bundle-analyzer" "15.1.5"
