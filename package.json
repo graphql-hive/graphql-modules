@@ -73,7 +73,7 @@
     "ws": "8.18.1"
   },
   "resolutions": {
-    "rollup": "2.79.2",
+    "rollup": "4.40.0",
     "esbuild": "0.25.1"
   },
   "prettier": {
