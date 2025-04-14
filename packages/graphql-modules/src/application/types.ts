@@ -4,6 +4,7 @@ import {
   DocumentNode,
   GraphQLSchema,
   ExecutionResult,
+  ExecutionArgs,
 } from 'graphql';
 import type { Provider, Injector } from '../di';
 import type { Resolvers, Module, MockedModule } from '../module/types';
@@ -70,7 +71,9 @@ export interface Application {
   /**
    * @deprecated Use `createApolloExecutor`, `createExecution` and `createSubscription` methods instead.
    */
-  createSchemaForApollo(): GraphQLSchema;
+  createSchemaForApollo(
+    options?: Pick<ExecutionArgs, 'fieldResolver'>
+  ): GraphQLSchema;
   /**
    * Experimental
    */
