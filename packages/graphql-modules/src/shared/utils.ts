@@ -1,4 +1,4 @@
-import { GraphQLSchema } from 'graphql';
+import { GraphQLSchema, isSchema } from 'graphql';
 
 export function flatten<T>(arr: T[]): T extends (infer A)[] ? A[] : T[] {
   return Array.prototype.concat(...arr) as any;
@@ -108,7 +108,7 @@ export function uniqueId(isNotUsed: (id: string) => boolean) {
 }
 
 export function isNotSchema<T>(obj: any): obj is T {
-  return obj instanceof GraphQLSchema === false;
+  return !isSchema(obj);
 }
 
 export function merge<S extends object, T extends object>(
