@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { createApplication, createModule, testkit, gql } from '../src';
 import { NonDocumentNodeError } from '../src/shared/errors';
+import { resolve } from 'path';
 
 test('fail when modules have non-unique ids', async () => {
   const modFoo = createModule({
@@ -395,4 +396,35 @@ test('fail when modules have non-DocumentNode typeDefs', async () => {
       ` as any,
     });
   }).toThrow(NonDocumentNodeError);
+});
+
+test('should allow resolver extensions', async () => {
+  const m1 = createModule({
+    id: 'test',
+    typeDefs: gql`
+      type Query {
+        dummy: String!
+      }
+    `,
+    resolvers: {
+      Query: {
+        dummy: {
+          resolve: () => '1',
+          extensions: {
+            test: 'test',
+          },
+        },
+      },
+    },
+  });
+
+  const app = createApplication({
+    modules: [m1],
+  });
+
+  const schema = app.schema;
+  expect(
+    Object.keys(schema.getQueryType()?.getFields().dummy.extensions || {})
+      .length
+  ).toBe(1);
 });

@@ -92,6 +92,18 @@ export function createResolvers(
                 resolvers[typeName][fieldName].resolve = resolver;
               }
 
+              if (isDefined((obj[fieldName] as any).extensions)) {
+                // some extensions allow to omit the resolve function, e.g. grafast
+                const defaultResolver = (val: any) => val;
+                const resolver = wrapResolver({
+                  config,
+                  resolver: (obj[fieldName] as any).resolve || defaultResolver,
+                  middlewareMap,
+                  path,
+                });
+                resolvers[typeName][fieldName].resolve = resolver;
+              }
+
               // { subscribe }
               if (isDefined((obj[fieldName] as any).subscribe)) {
                 const resolver = wrapResolver({
@@ -284,6 +296,21 @@ function addObject({
 
           writeResolverMetadata(resolver.resolve, config);
           container[typeName][fieldName].resolve = resolver.resolve;
+        }
+
+        // extensions
+        if (isDefined(resolver.extensions)) {
+          if (container[typeName][fieldName].extensions) {
+            throw new ResolverDuplicatedError(
+              `Duplicated resolver of "${typeName}.${fieldName}" (extensions method)`,
+              useLocation({ dirname: config.dirname, id: config.id })
+            );
+          }
+
+          (resolver.extensions as any)[resolverMetadataProp] = {
+            moduleId: config.id,
+          } as ResolverMetadata;
+          container[typeName][fieldName].extensions = resolver.extensions;
         }
 
         // subscribe
@@ -501,10 +528,15 @@ function isResolveFn(value: any): value is ResolveFn {
 interface ResolveOptions {
   resolve?: ResolveFn;
   subscribe?: ResolveFn;
+  extensions?: Record<string, any>;
 }
 
 function isResolveOptions(value: any): value is ResolveOptions {
-  return isDefined(value.resolve) || isDefined(value.subscribe);
+  return (
+    isDefined(value.resolve) ||
+    isDefined(value.subscribe) ||
+    isDefined(value.extensions)
+  );
 }
 
 function isScalarResolver(obj: any): obj is GraphQLScalarType {
