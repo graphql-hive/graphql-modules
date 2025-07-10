@@ -60,10 +60,8 @@ npm i @graphql-tools/load-files
 Next, use it to load your files dynamically:
 
 ```ts
-import MyQueryType from './query.type.graphql'
 import { createModule } from 'graphql-modules'
-import { loadFilesSync } from '@graphql-tools/load-files'
-import { join } from 'path'
+import { constant } from "grafast";
 
 export const myModule = createModule({
   id: 'my-module',
@@ -72,3 +70,40 @@ export const myModule = createModule({
   resolvers: loadFilesSync(join(__dirname, './resolvers/*.ts'))
 })
 ```
+
+## Resolver Extensions
+
+You can use resolver extensions to extend the functionality of your resolvers to make your modules work with such extensions as [Grafast Plan Resolver](https://grafast.org/grafast/plan-resolvers#specifying-a-field-plan-resolver) or [GraphQL Query Complexity](https://github.com/slicknode/graphql-query-complexity/blob/HEAD/src/estimators/fieldExtensions/README.md).
+
+To use resolver extensions, you can use the `extensions` property in your resolvers.
+
+```ts
+import { createModule, gql } from 'graphql-modules'
+import { constant } from "grafast";
+
+export const myModule = createModule({
+  id: 'my-module',
+  dirname: __dirname,
+  typeDefs: [
+    gql`
+      type Query {
+        meaningOfLife: Int!
+      }
+    `
+  ],
+  resolvers: {
+    Query: {
+      meaningOfLife: {
+        extensions: {
+          grafast: {
+            plan() {
+              return constant(42);
+            },
+          },
+        },
+      },
+    }
+  }
+})
+```
+
