@@ -2,7 +2,6 @@ import 'reflect-metadata';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { createApplication, createModule, testkit, gql } from '../src';
 import { NonDocumentNodeError } from '../src/shared/errors';
-import { resolve } from 'path';
 
 test('fail when modules have non-unique ids', async () => {
   const modFoo = createModule({
