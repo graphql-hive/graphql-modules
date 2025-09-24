@@ -5,6 +5,7 @@ import {
   defaultFieldResolver,
   FieldNode,
   GraphQLResolveInfo,
+  GraphQLFieldExtensions,
 } from 'graphql';
 import { Resolvers, ModuleConfig } from './types';
 import { ModuleMetadata } from './metadata';
@@ -92,18 +93,6 @@ export function createResolvers(
                 resolvers[typeName][fieldName].resolve = resolver;
               }
 
-              if (isDefined((obj[fieldName] as any).extensions)) {
-                // some extensions allow to omit the resolve function, e.g. grafast
-                const defaultResolver = (val: any) => val;
-                const resolver = wrapResolver({
-                  config,
-                  resolver: (obj[fieldName] as any).resolve || defaultResolver,
-                  middlewareMap,
-                  path,
-                });
-                resolvers[typeName][fieldName].resolve = resolver;
-              }
-
               // { subscribe }
               if (isDefined((obj[fieldName] as any).subscribe)) {
                 const resolver = wrapResolver({
@@ -113,6 +102,13 @@ export function createResolvers(
                   path,
                 });
                 resolvers[typeName][fieldName].subscribe = resolver;
+              }
+
+              if (isDefined((obj[fieldName] as any).extensions)) {
+                // Do NOT add a resolve if one is not specified, it will cause
+                // change in behavior in systems like `grafast`
+                resolvers[typeName][fieldName].extensions =
+                  obj[fieldName].extensions;
               }
             }
           }
@@ -298,21 +294,6 @@ function addObject({
           container[typeName][fieldName].resolve = resolver.resolve;
         }
 
-        // extensions
-        if (isDefined(resolver.extensions)) {
-          if (container[typeName][fieldName].extensions) {
-            throw new ResolverDuplicatedError(
-              `Duplicated resolver of "${typeName}.${fieldName}" (extensions method)`,
-              useLocation({ dirname: config.dirname, id: config.id })
-            );
-          }
-
-          (resolver.extensions as any)[resolverMetadataProp] = {
-            moduleId: config.id,
-          } as ResolverMetadata;
-          container[typeName][fieldName].extensions = resolver.extensions;
-        }
-
         // subscribe
         if (isDefined(resolver.subscribe)) {
           if (container[typeName][fieldName].subscribe) {
@@ -324,6 +305,19 @@ function addObject({
 
           writeResolverMetadata(resolver.subscribe, config);
           container[typeName][fieldName].subscribe = resolver.subscribe;
+        }
+
+        // extensions
+        if (isDefined(resolver.extensions)) {
+          if (container[typeName][fieldName].extensions) {
+            throw new ResolverDuplicatedError(
+              `Duplicated resolver of "${typeName}.${fieldName}" (extensions object)`,
+              useLocation({ dirname: config.dirname, id: config.id })
+            );
+          }
+
+          writeResolverMetadata(resolver.extensions, config);
+          container[typeName][fieldName].extensions = resolver.extensions;
         }
       }
     }
@@ -426,7 +420,10 @@ function ensureImplements(metadata: ModuleMetadata) {
   };
 }
 
-function writeResolverMetadata(resolver: Function, config: ModuleConfig): void {
+function writeResolverMetadata(
+  resolver: Function | GraphQLFieldExtensions<any, any, any>,
+  config: ModuleConfig
+): void {
   if (!resolver) {
     return;
   }
@@ -436,7 +433,9 @@ function writeResolverMetadata(resolver: Function, config: ModuleConfig): void {
   } as ResolverMetadata;
 }
 
-export function readResolverMetadata(resolver: ResolveFn): ResolverMetadata {
+export function readResolverMetadata(
+  resolver: ResolveFn | GraphQLFieldExtensions<any, any, any>
+): ResolverMetadata {
   return (resolver as any)[resolverMetadataProp];
 }
 
@@ -528,7 +527,7 @@ function isResolveFn(value: any): value is ResolveFn {
 interface ResolveOptions {
   resolve?: ResolveFn;
   subscribe?: ResolveFn;
-  extensions?: Record<string, any>;
+  extensions?: GraphQLFieldExtensions<any, any, any>;
 }
 
 function isResolveOptions(value: any): value is ResolveOptions {
