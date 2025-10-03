@@ -5,6 +5,7 @@ import {
   defaultFieldResolver,
   FieldNode,
   GraphQLResolveInfo,
+  GraphQLFieldExtensions,
 } from 'graphql';
 import { Resolvers, ModuleConfig } from './types';
 import { ModuleMetadata } from './metadata';
@@ -101,6 +102,13 @@ export function createResolvers(
                   path,
                 });
                 resolvers[typeName][fieldName].subscribe = resolver;
+              }
+
+              if (isDefined((obj[fieldName] as any).extensions)) {
+                // Do NOT add a resolve if one is not specified, it will cause
+                // change in behavior in systems like `grafast`
+                resolvers[typeName][fieldName].extensions =
+                  obj[fieldName].extensions;
               }
             }
           }
@@ -298,6 +306,19 @@ function addObject({
           writeResolverMetadata(resolver.subscribe, config);
           container[typeName][fieldName].subscribe = resolver.subscribe;
         }
+
+        // extensions
+        if (isDefined(resolver.extensions)) {
+          if (container[typeName][fieldName].extensions) {
+            throw new ResolverDuplicatedError(
+              `Duplicated resolver of "${typeName}.${fieldName}" (extensions object)`,
+              useLocation({ dirname: config.dirname, id: config.id })
+            );
+          }
+
+          writeResolverMetadata(resolver.extensions, config);
+          container[typeName][fieldName].extensions = resolver.extensions;
+        }
       }
     }
   }
@@ -399,7 +420,10 @@ function ensureImplements(metadata: ModuleMetadata) {
   };
 }
 
-function writeResolverMetadata(resolver: Function, config: ModuleConfig): void {
+function writeResolverMetadata(
+  resolver: Function | GraphQLFieldExtensions<any, any, any>,
+  config: ModuleConfig
+): void {
   if (!resolver) {
     return;
   }
@@ -409,7 +433,9 @@ function writeResolverMetadata(resolver: Function, config: ModuleConfig): void {
   } as ResolverMetadata;
 }
 
-export function readResolverMetadata(resolver: ResolveFn): ResolverMetadata {
+export function readResolverMetadata(
+  resolver: ResolveFn | GraphQLFieldExtensions<any, any, any>
+): ResolverMetadata {
   return (resolver as any)[resolverMetadataProp];
 }
 
@@ -501,10 +527,15 @@ function isResolveFn(value: any): value is ResolveFn {
 interface ResolveOptions {
   resolve?: ResolveFn;
   subscribe?: ResolveFn;
+  extensions?: GraphQLFieldExtensions<any, any, any>;
 }
 
 function isResolveOptions(value: any): value is ResolveOptions {
-  return isDefined(value.resolve) || isDefined(value.subscribe);
+  return (
+    isDefined(value.resolve) ||
+    isDefined(value.subscribe) ||
+    isDefined(value.extensions)
+  );
 }
 
 function isScalarResolver(obj: any): obj is GraphQLScalarType {
