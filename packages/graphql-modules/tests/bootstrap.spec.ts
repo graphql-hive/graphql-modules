@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { createApplication, createModule, testkit, gql } from '../src';
 import { NonDocumentNodeError } from '../src/shared/errors';
+import { defaultFieldResolver } from 'graphql';
 
 test('fail when modules have non-unique ids', async () => {
   const modFoo = createModule({
@@ -397,33 +398,62 @@ test('fail when modules have non-DocumentNode typeDefs', async () => {
   }).toThrow(NonDocumentNodeError);
 });
 
-test('should allow resolver extensions', async () => {
-  const m1 = createModule({
-    id: 'test',
-    typeDefs: gql`
-      type Query {
-        dummy: String!
-      }
-    `,
-    resolvers: {
-      Query: {
-        dummy: {
-          resolve: () => '1',
-          extensions: {
-            test: 'test',
+describe('extensions', () => {
+  const makeApp = () => {
+    const m1 = createModule({
+      id: 'test',
+      typeDefs: gql`
+        type Query {
+          dummy: String!
+          dummy2: String!
+        }
+      `,
+      resolvers: {
+        Query: {
+          dummy: {
+            resolve: () => '1',
+            extensions: {
+              test: 'test',
+            },
+          },
+          dummy2: {
+            extensions: {
+              test2: 'test2',
+            },
           },
         },
       },
-    },
+    });
+    const app = createApplication({
+      modules: [m1],
+    });
+    return app;
+  };
+
+  it('populates extensions', async () => {
+    const app = makeApp();
+    const schema = app.schema;
+    const fields = schema.getQueryType()!.getFields();
+
+    expect(fields.dummy.extensions).toMatchObject({
+      test: 'test',
+    });
+    expect(fields.dummy2.extensions).toMatchObject({
+      test2: 'test2',
+    });
   });
 
-  const app = createApplication({
-    modules: [m1],
+  it('does not create a resolver if one was not specified', async () => {
+    const app = makeApp();
+    const schema = app.schema;
+    const fields = schema.getQueryType()!.getFields();
+    // Doesn't matter if it's the default resolver or unset, it simply must not
+    // be a new function; otherwise `grafast` will interpret it as an
+    // additional part of execution which will likely break the user's plan.
+    if (fields.dummy2.resolve) {
+      expect(fields.dummy2.resolve).toEqual(defaultFieldResolver);
+    } else {
+      expect(fields.dummy2.resolve).toBeFalsy();
+    }
   });
-
-  const schema = app.schema;
-  expect(
-    Object.keys(schema.getQueryType()?.getFields().dummy.extensions || {})
-      .length
-  ).toBe(1);
 });
