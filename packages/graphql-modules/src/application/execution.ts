@@ -10,6 +10,7 @@ import { Application } from './types';
 import { ExecutionContextBuilder } from './context';
 import { Maybe } from '../shared/types';
 import { isNotSchema } from '../shared/utils';
+import { InternalAppContext } from './application';
 
 export function executionCreator({
   contextBuilder,
@@ -30,38 +31,47 @@ export function executionCreator({
       fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
       typeResolver?: Maybe<GraphQLTypeResolver<any, any>>
     ) => {
-      // Create an execution context
-      const { context, ɵdestroy: destroy } =
-        options?.controller ??
-        contextBuilder(
-          isNotSchema<ExecutionArgs>(argsOrSchema)
-            ? argsOrSchema.contextValue
-            : contextValue
-        );
+      function perform({
+        context,
+        ɵdestroy: destroy,
+      }: {
+        context: InternalAppContext;
+        ɵdestroy: () => void;
+      }) {
+        const executionArgs: ExecutionArgs = isNotSchema<ExecutionArgs>(
+          argsOrSchema
+        )
+          ? {
+              ...argsOrSchema,
+              contextValue: context,
+            }
+          : {
+              schema: argsOrSchema,
+              document: document!,
+              rootValue,
+              contextValue: context,
+              variableValues,
+              operationName,
+              fieldResolver,
+              typeResolver,
+            };
 
-      const executionArgs: ExecutionArgs = isNotSchema<ExecutionArgs>(
-        argsOrSchema
-      )
-        ? {
-            ...argsOrSchema,
-            contextValue: context,
-          }
-        : {
-            schema: argsOrSchema,
-            document: document!,
-            rootValue,
-            contextValue: context,
-            variableValues,
-            operationName,
-            fieldResolver,
-            typeResolver,
-          };
+        // It's important to wrap the executeFn within a promise
+        // so we can easily control the end of execution (with finally)
+        return Promise.resolve()
+          .then(() => executeFn(executionArgs))
+          .finally(destroy);
+      }
 
-      // It's important to wrap the executeFn within a promise
-      // so we can easily control the end of execution (with finally)
-      return Promise.resolve()
-        .then(() => executeFn(executionArgs))
-        .finally(destroy);
+      if (options?.controller) {
+        return perform(options.controller);
+      }
+
+      return contextBuilder(
+        isNotSchema<ExecutionArgs>(argsOrSchema)
+          ? argsOrSchema.contextValue
+          : contextValue
+      ).runWithContext(perform);
     };
   };
 
