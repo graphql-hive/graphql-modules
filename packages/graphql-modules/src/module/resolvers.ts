@@ -17,7 +17,7 @@ import {
   ResolverDuplicatedError,
   ResolverInvalidError,
 } from './../shared/errors';
-import { isNil, isDefined, isPrimitive } from '../shared/utils';
+import { isNil, isDefined, isPrimitive, hasOwnProperty } from '../shared/utils';
 import {
   createMiddleware,
   mergeMiddlewareMaps,
@@ -55,7 +55,7 @@ export function createResolvers(
 
   // Wrap resolvers
   for (const typeName in resolvers) {
-    if (resolvers.hasOwnProperty(typeName)) {
+    if (hasOwnProperty(resolvers, typeName)) {
       const obj = resolvers[typeName];
 
       if (isScalarResolver(obj)) {
@@ -64,7 +64,7 @@ export function createResolvers(
         continue;
       } else if (obj && typeof obj === 'object') {
         for (const fieldName in obj) {
-          if (obj.hasOwnProperty(fieldName)) {
+          if (hasOwnProperty(obj, fieldName)) {
             ensure.type(typeName, fieldName);
             const path = [typeName, fieldName];
 
@@ -223,7 +223,7 @@ function mergeResolvers(config: ModuleConfig): Single<Resolvers> {
 
   for (const currentResolvers of resolvers) {
     for (const typeName in currentResolvers) {
-      if (currentResolvers.hasOwnProperty(typeName)) {
+      if (hasOwnProperty(currentResolvers, typeName)) {
         const value = currentResolvers[typeName];
 
         if (isNil(value)) {
@@ -263,7 +263,7 @@ function addObject({
   }
 
   for (const fieldName in fields) {
-    if (fields.hasOwnProperty(fieldName)) {
+    if (hasOwnProperty(fields, fieldName)) {
       const resolver = fields[fieldName];
 
       if (isResolveFn(resolver)) {
@@ -365,7 +365,7 @@ function addEnum({
   }
 
   for (const key in resolver) {
-    if (resolver.hasOwnProperty(key)) {
+    if (hasOwnProperty(resolver, key)) {
       const value = resolver[key];
 
       if (container[typeName][key]) {
