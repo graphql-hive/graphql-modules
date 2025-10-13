@@ -1067,6 +1067,67 @@ test('Global Token (module) should use other local tokens (singleton)', async ()
   expect(logger).toHaveBeenNthCalledWith(2, 'info');
 });
 
+test('Global Token of a module should be accessible by itself (singleton)', async () => {
+  @Injectable({
+    scope: Scope.Singleton,
+    global: true,
+  })
+  class Data {
+    lorem() {
+      return 'ipsum';
+    }
+  }
+
+  @Injectable({
+    scope: Scope.Singleton,
+  })
+  class AppData {
+    constructor(private data: Data) {}
+
+    ipsum() {
+      return this.data.lorem();
+    }
+  }
+
+  const fooModule = createModule({
+    id: 'foo',
+    providers: [Data, AppData],
+    typeDefs: gql`
+      type Query {
+        foo: String!
+      }
+    `,
+    resolvers: {
+      Query: {
+        foo(_parent: {}, _args: {}, { injector }: GraphQLModulesModuleContext) {
+          return injector.get(AppData).ipsum();
+        },
+      },
+    },
+  });
+
+  const app = createApplication({
+    modules: [fooModule],
+  });
+
+  const contextValue = { request: {}, response: {} };
+  const document = gql`
+    {
+      foo
+    }
+  `;
+
+  const result = await testkit.execute(app, {
+    contextValue,
+    document,
+  });
+
+  expect(result.errors).toBeUndefined();
+  expect(result.data).toEqual({
+    foo: 'ipsum',
+  });
+});
+
 test('instantiate all singleton providers', async () => {
   const spies = {
     logger: jest.fn(),
