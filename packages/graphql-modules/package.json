@@ -26,6 +26,12 @@
       "types": "./*.d.ts"
     }
   },
+  "imports": {
+    "#async-context": {
+      "node": "./async-context.node.cjs",
+      "default": "./async-context.browser.mjs"
+    }
+  },
   "typings": "dist/index.d.ts",
   "typescript": {
     "definition": "dist/index.d.ts"

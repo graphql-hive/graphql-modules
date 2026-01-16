@@ -2,7 +2,7 @@ import { wrapSchema } from '@graphql-tools/wrap';
 import { DocumentNode, execute, GraphQLSchema } from 'graphql';
 import { uniqueId } from '../shared/utils';
 import { InternalAppContext } from './application';
-import { ExecutionContextBuilder } from './context';
+import { ExecutionContextBuilder, ExecutionContextEnv } from './context';
 import { Application } from './types';
 
 const CONTEXT_ID = Symbol.for('context-id');
@@ -60,11 +60,12 @@ export function apolloSchemaCreator({
     > = {};
     const subscription = createSubscription();
 
-    function getSession(ctx: any) {
+    function getSession(
+      ctx: any,
+      { context, ɵdestroy: destroy }: ExecutionContextEnv
+    ) {
       if (!ctx[CONTEXT_ID]) {
         ctx[CONTEXT_ID] = uniqueId((id) => !sessions[id]);
-        const { context, ɵdestroy: destroy } = contextBuilder(ctx);
-
         sessions[ctx[CONTEXT_ID]] = {
           count: 0,
           session: {
@@ -99,24 +100,27 @@ export function apolloSchemaCreator({
             operationName: input.operationName,
           });
         }
-        // Create an execution context
-        const { context, destroy } = getSession(input.context!);
 
-        // It's important to wrap the executeFn within a promise
-        // so we can easily control the end of execution (with finally)
-        return Promise.resolve()
-          .then(
-            () =>
-              execute({
-                schema,
-                document: input.document,
-                contextValue: context,
-                variableValues: input.variables as any,
-                rootValue: input.rootValue,
-                operationName: input.operationName,
-              }) as any
-          )
-          .finally(destroy);
+        // Create an execution context and run within it
+        return contextBuilder(input.context!).runWithContext((env) => {
+          const { context, destroy } = getSession(input.context!, env);
+
+          // It's important to wrap the executeFn within a promise
+          // so we can easily control the end of execution (with finally)
+          return Promise.resolve()
+            .then(
+              () =>
+                execute({
+                  schema,
+                  document: input.document,
+                  contextValue: context,
+                  variableValues: input.variables as any,
+                  rootValue: input.rootValue,
+                  operationName: input.operationName,
+                }) as any
+            )
+            .finally(destroy);
+        });
       },
     });
   };
