@@ -16,6 +16,10 @@
     "examples-subscriptions",
     "graphql-yoga"
   ],
+  "privatePackages": {
+    "tag": false,
+    "version": false
+  },
   "snapshot": {
     "useCalculatedVersion": true,
     "prereleaseTemplate": "{tag}-{datetime}-{commit}"
