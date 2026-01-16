@@ -130,3 +130,25 @@ test('Global context and module context should be reachable', async () => {
     expect.objectContaining({ postRegion: 1234 })
   );
 });
+
+test('Resolver is implemented', () => {
+  const invalidModule = createModule({
+    id: 'invalid-module',
+    typeDefs: gql`
+      type Query {
+        post(id: Int!): String!
+      }
+    `,
+    resolvers: {
+      Query: {
+        post: undefined,
+      },
+    },
+  });
+
+  expect(() => {
+    createApplication({
+      modules: [invalidModule],
+    });
+  }).toThrow('Resolver not implement of "Query.post"');
+});
