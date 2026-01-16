@@ -248,7 +248,7 @@ async function main() {
 
   const averageRecords: Record<string, string> = {};
   let belowThreshold: number = 0;
-  const threshold = 75;
+  const threshold = 65; // because of async_hooks, would be 75 otherwise
 
   Object.keys(results)
     .map(compare)

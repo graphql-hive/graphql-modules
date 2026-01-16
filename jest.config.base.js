@@ -13,9 +13,15 @@ module.exports = (dir) => {
     rootDir: dir,
     reporters: ['default'],
     modulePathIgnorePatterns: ['dist'],
-    moduleNameMapper: pathsToModuleNameMapper(tsconfig.compilerOptions.paths, {
-      prefix: `${ROOT_DIR}/`,
-    }),
+    moduleNameMapper: {
+      ...pathsToModuleNameMapper(tsconfig.compilerOptions.paths, {
+        prefix: `${ROOT_DIR}/`,
+      }),
+      // node
+      '^#async\\-context$': `${ROOT_DIR}/packages/graphql-modules/src/async-context.node.cjs`,
+      // browser
+      // '^#async\\-context$': `${ROOT_DIR}/packages/graphql-modules/src/async-context.browser.mjs`,
+    },
     cacheDirectory: resolve(
       ROOT_DIR,
       `${CI ? '' : 'node_modules/'}.cache/jest`
