@@ -28,6 +28,12 @@
 
   - Updated dependency [`ramda@^0.30.0` ↗︎](https://www.npmjs.com/package/ramda/v/0.30.0) (from `^0.29.0`, in `dependencies`)
 
+## 2.4.1
+
+### Patch Changes
+
+- [#2634](https://github.com/graphql-hive/graphql-modules/pull/2634) [`d5efab6`](https://github.com/graphql-hive/graphql-modules/commit/d5efab6f629b63a4861510736e9f50acf34b3309) Thanks [@enisdenjo](https://github.com/enisdenjo)! - Bind context to async execution avoiding race-conditions
+
 ## 2.4.0
 
 ### Minor Changes
