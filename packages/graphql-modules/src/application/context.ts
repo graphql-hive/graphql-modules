@@ -3,7 +3,7 @@ import { ResolvedProvider } from '../di/resolution';
 import { ID } from '../shared/types';
 import { once, merge } from '../shared/utils';
 import type { InternalAppContext, ModulesMap } from './application';
-import { getAsyncContext, runWithAsyncContext } from './async-context';
+import async_context from '#async-context';
 import { attachGlobalProvidersMap } from './di';
 import { CONTEXT } from './tokens';
 
@@ -74,13 +74,15 @@ export function createContextBuilder({
     });
 
     appInjector.setExecutionContextGetter(function executionContextGetter() {
-      return getAsyncContext()?.getApplicationContext() || appContext;
+      return (
+        async_context.getAsyncContext()?.getApplicationContext() || appContext
+      );
     } as any);
 
     function createModuleExecutionContextGetter(moduleId: string) {
       return function moduleExecutionContextGetter() {
         return (
-          getAsyncContext()?.getModuleContext(moduleId) ||
+          async_context.getAsyncContext()?.getModuleContext(moduleId) ||
           getModuleContext(moduleId, context)
         );
       };
@@ -192,7 +194,7 @@ export function createContextBuilder({
     return {
       ...env,
       runWithContext(cb) {
-        return runWithAsyncContext(
+        return async_context.runWithAsyncContext(
           {
             getApplicationContext() {
               return appContext;

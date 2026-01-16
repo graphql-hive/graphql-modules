@@ -28,7 +28,8 @@
     "noUnusedParameters": true,
 
     "paths": {
-      "graphql-modules": ["packages/graphql-modules/src/index.ts"]
+      "graphql-modules": ["packages/graphql-modules/src/index.ts"],
+      "#async-context": ["packages/graphql-modules/src/async-context"]
     }
   },
   "include": ["packages"],

@@ -11,4 +11,6 @@ export type RunWithAsyncContext = <R, TArgs extends any[]>(
   ...args: TArgs
 ) => R;
 
-// TODO: use async-context.node for node and async-context.browser for browser
+// safe, will be replaced in package json
+export const getAsyncContext: GetAsyncContext = undefined;
+export const runWithAsyncContext: RunWithAsyncContext = undefined;
