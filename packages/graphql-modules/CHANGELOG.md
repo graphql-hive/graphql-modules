@@ -1,5 +1,11 @@
 # graphql-modules
 
+## 3.1.1
+
+### Patch Changes
+
+- [#2521](https://github.com/graphql-hive/graphql-modules/pull/2521) [`d22ecf3`](https://github.com/graphql-hive/graphql-modules/commit/d22ecf3891d3fe55d3878157b58dbc5c33967921) Thanks [@enisdenjo](https://github.com/enisdenjo)! - Bind context to async execution avoiding race-conditions
+
 ## 3.1.0
 
 ### Minor Changes
