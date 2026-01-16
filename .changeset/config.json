@@ -7,7 +7,7 @@
   "commit": false,
   "linked": [],
   "access": "public",
-  "baseBranch": "master",
+  "baseBranch": "2.x.x",
   "updateInternalDependencies": "patch",
   "ignore": [
     "apollo-subscriptions",

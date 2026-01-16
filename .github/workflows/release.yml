@@ -2,7 +2,7 @@ name: release
 on:
   push:
     branches:
-      - master
+      - 2.x.x
 
 jobs:
   stable:
