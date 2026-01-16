@@ -1,7 +1,4 @@
-[![GraphQLConf 2024 Banner: September 10-12, San Francisco. Hosted by the GraphQL Foundation](https://github.com/user-attachments/assets/bdb8cd5d-5186-4ece-b06b-b00a499b7868)](https://graphql.org/conf/2024/?utm_source=github&utm_medium=graphql_modules&utm_campaign=readme)
-
-<!-- Uncomment when we remove GraphQL Conf banner -->
-<!-- [![modules](https://user-images.githubusercontent.com/25294569/64067074-ed185b80-cc2a-11e9-8f4d-5f1e19feaa0a.gif)](https://graphql-modules.com/) -->
+[![modules](https://user-images.githubusercontent.com/25294569/64067074-ed185b80-cc2a-11e9-8f4d-5f1e19feaa0a.gif)](https://graphql-modules.com/)
 
 [![npm version](https://badge.fury.io/js/graphql-modules.svg)](https://www.npmjs.com/package/graphql-modules)
 ![CI](https://github.com/graphql-hive/graphql-modules/workflows/CI/badge.svg)
