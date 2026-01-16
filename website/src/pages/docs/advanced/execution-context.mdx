@@ -38,3 +38,13 @@ The next lines show the usage of `@ExecutionContext` decorator. It's a property 
 This way the Singleton `Data` service runs within the execution context of a GraphQL Operation and can access Operation scoped Injector and the GraphQL Context object.
 
 It also means you gain a lot in terms of performance because the `Data` class is instantiated only once and used in many operations.
+
+<Callout>
+  Execution context uses the `async_hooks` module, and therefore `@ExecutionContext` impacts the performance.
+
+GraphQL Modules is smart enough to enable `async_hooks` only when
+`@ExecutionContext` is used though.
+
+Note that `async_hooks` is important to avoid race conditions concurrent parallel requests.
+
+</Callout>
