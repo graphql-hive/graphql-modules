@@ -76,7 +76,11 @@
   },
   "resolutions": {
     "rollup": "4.55.2",
-    "esbuild": "0.25.5"
+    "esbuild": "0.25.5",
+    "qs": "6.14.1",
+    "tar": "7.5.4",
+    "playwright": "1.55.1",
+    "tmp": "0.2.4"
   },
   "prettier": {
     "trailingComma": "es5",
