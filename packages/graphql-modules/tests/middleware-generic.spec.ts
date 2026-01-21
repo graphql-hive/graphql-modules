@@ -115,7 +115,7 @@ describe('Middleware', () => {
   test('should only accept middleware as functions', async () => {
     expect(() => {
       compose([{} as any]);
-    }).toThrowError(TypeError);
+    }).toThrow(TypeError);
   });
 
   it('should work when yielding at the end of the stack', async () => {

@@ -100,7 +100,7 @@ test('OnDestroy hook', async () => {
   });
 
   expect(result1.data).toEqual(data);
-  expect(spies.onDestroy).toBeCalledTimes(1);
+  expect(spies.onDestroy).toHaveBeenCalledTimes(1);
 
   const result2 = await testkit.execute(app, {
     contextValue: createContext(),
@@ -108,5 +108,5 @@ test('OnDestroy hook', async () => {
   });
 
   expect(result2.data).toEqual(data);
-  expect(spies.onDestroy).toBeCalledTimes(2);
+  expect(spies.onDestroy).toHaveBeenCalledTimes(2);
 });

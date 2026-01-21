@@ -118,9 +118,9 @@ test('ExecutionContext on module level provider', async () => {
   expect(result2.errors).toBeUndefined();
   expect(result2.data).toEqual(data);
 
-  expect(spies.posts).toBeCalledTimes(1);
-  expect(spies.connection).toBeCalledTimes(2);
-  expect(spies.connectionId).toBeCalledTimes(2);
+  expect(spies.posts).toHaveBeenCalledTimes(1);
+  expect(spies.connection).toHaveBeenCalledTimes(2);
+  expect(spies.connectionId).toHaveBeenCalledTimes(2);
 
   // ExecutionContext accessed in two executions
   // should equal two different connections
@@ -230,9 +230,9 @@ test('ExecutionContext on application level provider', async () => {
 
   expect(result2.data).toEqual(data);
 
-  expect(spies.posts).toBeCalledTimes(1);
-  expect(spies.connection).toBeCalledTimes(2);
-  expect(spies.connectionId).toBeCalledTimes(2);
+  expect(spies.posts).toHaveBeenCalledTimes(1);
+  expect(spies.connection).toHaveBeenCalledTimes(2);
+  expect(spies.connectionId).toHaveBeenCalledTimes(2);
 
   // ExecutionContext accessed in two executions
   // should equal two different connections
@@ -319,7 +319,7 @@ test('ExecutionContext on module level global provider', async () => {
   });
 
   expect(result.data).toEqual(expectedData);
-  expect(spies.posts).toBeCalledTimes(1);
+  expect(spies.posts).toHaveBeenCalledTimes(1);
   expect(spies.executionContext).toHaveBeenCalledTimes(1);
   expect(spies.executionContext).toHaveBeenCalledWith(
     expect.objectContaining(contextValue)
@@ -404,7 +404,7 @@ test('ExecutionContext on application level global provider', async () => {
   });
 
   expect(result.data).toEqual(expectedData);
-  expect(spies.posts).toBeCalledTimes(1);
+  expect(spies.posts).toHaveBeenCalledTimes(1);
   expect(spies.executionContext).toHaveBeenCalledTimes(1);
   expect(spies.executionContext).toHaveBeenCalledWith(
     expect.objectContaining(contextValue)

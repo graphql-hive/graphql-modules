@@ -483,7 +483,7 @@ describe('testInjector', () => {
       }
     }
 
-    expect(() => testkit.testInjector([Data])).toThrowError(/UNKNOWN-TOKEN/);
+    expect(() => testkit.testInjector([Data])).toThrow(/UNKNOWN-TOKEN/);
   });
 });
 
