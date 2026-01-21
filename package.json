@@ -52,7 +52,7 @@
     "benchmark": "2.1.4",
     "bob-the-bundler": "1.7.3",
     "chalk": "4.1.2",
-    "cross-env": "7.0.3",
+    "cross-env": "10.1.0",
     "dataloader": "2.2.3",
     "eslint": "9.22.0",
     "express": "5.2.1",
