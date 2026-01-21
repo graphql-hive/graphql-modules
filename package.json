@@ -38,7 +38,7 @@
     "@types/benchmark": "2.1.5",
     "@types/express": "5.0.3",
     "@types/jest": "29.5.14",
-    "@types/node": "22.15.32",
+    "@types/node": "24.10.9",
     "@types/ramda": "0.30.2",
     "babel-jest": "29.7.0",
     "@typescript-eslint/eslint-plugin": "8.34.1",

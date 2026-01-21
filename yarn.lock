@@ -1990,7 +1990,7 @@
     spawndamnit "^3.0.1"
     term-size "^2.1.0"
 
-"@changesets/config@^3.1.1", "@changesets/config@^3.1.2":
+"@changesets/config@^3.1.1":
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/@changesets/config/-/config-3.1.2.tgz#7d04d531285766f8f7ae03648e0b4a97c71aa9b3"
   integrity sha512-CYiRhA4bWKemdYi/uwImjPxqWNpqGPNbEBdX1BdONALFIDK7MCUj6FPkzD+z9gJcvDFUQJn9aDVf4UG7OT6Kog==
@@ -2063,7 +2063,7 @@
   dependencies:
     picocolors "^1.1.0"
 
-"@changesets/parse@^0.4.2":
+"@changesets/parse@^0.4.1":
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/@changesets/parse/-/parse-0.4.2.tgz#d31f6e87fe8b3b404e44b1ffd8bb0caa24094a2f"
   integrity sha512-Uo5MC5mfg4OM0jU3up66fmSn6/NE9INK+8/Vn/7sMVcdWg46zfbvvUSjD9EMonVqPi9fbrJH9SXHn48Tr1f2yA==
@@ -5886,12 +5886,12 @@
   dependencies:
     "@types/unist" "*"
 
-"@types/node@*", "@types/node@22.15.32", "@types/node@>=13.7.0":
-  version "22.15.32"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.15.32.tgz#c301cc2275b535a5e54bb81d516b1d2e9afe06e5"
-  integrity sha512-3jigKqgSjsH6gYZv2nEsqdXfZqIFGAV36XYYjf9KGZ3PSG+IhLecqPnI310RvjutyMwifE2hhhNEklOUrvx/wA==
+"@types/node@*", "@types/node@24.10.9", "@types/node@>=13.7.0":
+  version "24.10.9"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-24.10.9.tgz#1aeb5142e4a92957489cac12b07f9c7fe26057d0"
+  integrity sha512-ne4A0IpG3+2ETuREInjPNhUGis1SFjv1d5asp8MzEAGtOZeTeHVDOYqOgqfhvseqg/iXty2hjBf1zAOb7RNiNw==
   dependencies:
-    undici-types "~6.21.0"
+    undici-types "~7.16.0"
 
 "@types/node@^10.1.0":
   version "10.17.60"
@@ -11251,7 +11251,7 @@ js-yaml@^3.13.1, js-yaml@^3.6.1:
     argparse "^1.0.7"
     esprima "^4.0.0"
 
-js-yaml@^4.1.1:
+js-yaml@^4.1.0, js-yaml@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.1.1.tgz#854c292467705b699476e1a2decc0c8a3458806b"
   integrity sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==
@@ -16057,10 +16057,10 @@ ufo@^1.6.1:
   resolved "https://registry.yarnpkg.com/ufo/-/ufo-1.6.3.tgz#799666e4e88c122a9659805e30b9dc071c3aed4f"
   integrity sha512-yDJTmhydvl5lJzBmy/hyOAA0d+aqCBuwl818haVdYCRrWV84o7YyeVm4QlVHStqNrrJSTb6jKuFAVqAFsr+K3Q==
 
-undici-types@~6.21.0:
-  version "6.21.0"
-  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.21.0.tgz#691d00af3909be93a7faa13be61b3a5b50ef12cb"
-  integrity sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==
+undici-types@~7.16.0:
+  version "7.16.0"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-7.16.0.tgz#ffccdff36aea4884cbfce9a750a0580224f58a46"
+  integrity sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==
 
 undici@7.14.0, undici@^7.12.0:
   version "7.14.0"
