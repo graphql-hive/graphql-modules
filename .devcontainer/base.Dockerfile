@@ -1,5 +1,5 @@
 # Update the VARIANT arg in devcontainer.json to pick a Node.js version: 14, 12, 10 
-ARG VARIANT=22
+ARG VARIANT=24
 FROM node:${VARIANT}
 
 # Options for setup scripts
