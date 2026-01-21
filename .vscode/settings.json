@@ -6,8 +6,7 @@
     "test-lib": true,
     "lib": true,
     "coverage": true,
-    "npm": true,
-    "**/dist": true
+    "npm": true
   },
   "typescript.tsdk": "node_modules/typescript/lib"
 }
