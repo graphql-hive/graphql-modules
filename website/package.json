@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "next build",
-    "dev": "next --turbopack",
+    "build": "next build --turbopack || next build --webpack",
+    "dev": "next --turbopack || next --webpack",
     "pagefind": "pagefind --site .next/server/app --output-path out/_pagefind",
     "postbuild": "next-sitemap && yarn pagefind",
     "start": "next start",
