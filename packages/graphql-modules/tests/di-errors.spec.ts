@@ -14,7 +14,7 @@ test('No Injectable error', () => {
     // @ts-ignore
     constructor(dep: any) {}
   }
-  expect(() => ReflectiveInjector.resolve([NoAnnotations])).toThrowError(
+  expect(() => ReflectiveInjector.resolve([NoAnnotations])).toThrow(
     `Missing @Injectable decorator for 'NoAnnotations'`
   );
 });
@@ -29,7 +29,7 @@ test('No Annotation error', () => {
     constructor(data: Data, dep: any) {}
   }
 
-  expect(() => ReflectiveInjector.resolve([NoAnnotations])).toThrowError(
+  expect(() => ReflectiveInjector.resolve([NoAnnotations])).toThrow(
     `Cannot resolve all parameters for 'NoAnnotations'(Data, ?). Make sure that all the parameters are decorated with Inject or have valid type annotations and that 'NoAnnotations' is decorated with Injectable.`
   );
 });
@@ -58,7 +58,7 @@ test('Circular dependencies error', () => {
     ]),
   });
 
-  expect(() => injector.get(Foo)).toThrowError(
+  expect(() => injector.get(Foo)).toThrow(
     'Cannot instantiate cyclic dependency! (InjectionToken Foo -> InjectionToken Bar -> InjectionToken Foo)'
   );
 });
@@ -92,7 +92,7 @@ test('fail on circular dependencies', async () => {
   });
   expect(() => {
     injector.get(Foo);
-  }).toThrowError(
+  }).toThrow(
     `Cannot instantiate cyclic dependency! (${stringify(Foo)} -> ${stringify(
       Bar
     )} -> ${stringify(Foo)})`
@@ -107,9 +107,7 @@ test('No provider error', () => {
     providers: [],
   });
 
-  expect(() => injector.get(Foo)).toThrowError(
-    'No provider for InjectionToken Foo'
-  );
+  expect(() => injector.get(Foo)).toThrow('No provider for InjectionToken Foo');
 });
 
 test('Instantiation error', () => {
@@ -127,7 +125,7 @@ test('Instantiation error', () => {
     ]),
   });
 
-  expect(() => injector.get(Foo)).toThrowError(
+  expect(() => injector.get(Foo)).toThrow(
     'Error during instantiation of InjectionToken Foo: expected error - in main'
   );
 });
@@ -138,7 +136,7 @@ test('Invalid provider error', () => {
       name: 'main',
       providers: ReflectiveInjector.resolve([true as any]),
     })
-  ).toThrowError(
+  ).toThrow(
     'Invalid provider - only instances of Provider and Type are allowed, got: true'
   );
 });
@@ -238,7 +236,7 @@ test('Make sure we have readable error', async () => {
     },
   });
 
-  expect(() => createApplication({ modules: [m2, m1] })).toThrowError(
+  expect(() => createApplication({ modules: [m2, m1] })).toThrow(
     'No provider for P1! (P2 -> P1) - in Module "m2" (Singleton Scope)'
   );
 });
@@ -312,7 +310,7 @@ test('Detect collision of two identical global providers (singleton)', async () 
       modules: [fooModule, barModule],
       providers: [AppData],
     });
-  }).toThrowError(
+  }).toThrow(
     `Failed to define 'Data' token as global. Token provided by two modules: 'bar', 'foo'`
   );
 });
@@ -386,7 +384,7 @@ test('Detect collision of two identical global providers (operation)', async () 
       modules: [fooModule, barModule],
       providers: [AppData],
     });
-  }).toThrowError(
+  }).toThrow(
     `Failed to define 'Data' token as global. Token provided by two modules: 'bar', 'foo'`
   );
 });

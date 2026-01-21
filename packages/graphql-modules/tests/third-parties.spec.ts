@@ -136,7 +136,7 @@ describe('Apollo Server', () => {
       m2: 'm2',
     });
 
-    expect(constructor).toBeCalledTimes(1);
-    expect(log).toBeCalledTimes(2);
+    expect(constructor).toHaveBeenCalledTimes(1);
+    expect(log).toHaveBeenCalledTimes(2);
   });
 });

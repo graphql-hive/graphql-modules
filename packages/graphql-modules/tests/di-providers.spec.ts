@@ -1122,9 +1122,9 @@ test('instantiate all singleton providers', async () => {
   });
 
   // make sure all providers are instantiated
-  expect(spies.logger).toBeCalledTimes(1);
-  expect(spies.data).toBeCalledTimes(1);
-  expect(spies.appData).toBeCalledTimes(1);
+  expect(spies.logger).toHaveBeenCalledTimes(1);
+  expect(spies.data).toHaveBeenCalledTimes(1);
+  expect(spies.appData).toHaveBeenCalledTimes(1);
 
   const contextValue = { request: {}, response: {} };
   const document = gql`
@@ -1144,9 +1144,9 @@ test('instantiate all singleton providers', async () => {
   });
 
   // make sure no providers are instantiated again
-  expect(spies.logger).toBeCalledTimes(1);
-  expect(spies.data).toBeCalledTimes(1);
-  expect(spies.appData).toBeCalledTimes(1);
+  expect(spies.logger).toHaveBeenCalledTimes(1);
+  expect(spies.data).toHaveBeenCalledTimes(1);
+  expect(spies.appData).toHaveBeenCalledTimes(1);
 });
 
 test('instantiate all singleton and global providers', async () => {
@@ -1220,9 +1220,9 @@ test('instantiate all singleton and global providers', async () => {
   });
 
   // make sure all providers are instantiated
-  expect(spies.logger).toBeCalledTimes(1);
-  expect(spies.data).toBeCalledTimes(1);
-  expect(spies.appData).toBeCalledTimes(1);
+  expect(spies.logger).toHaveBeenCalledTimes(1);
+  expect(spies.data).toHaveBeenCalledTimes(1);
+  expect(spies.appData).toHaveBeenCalledTimes(1);
 
   const contextValue = { request: {}, response: {} };
   const document = gql`
@@ -1242,9 +1242,9 @@ test('instantiate all singleton and global providers', async () => {
   });
 
   // make sure no providers are instantiated again
-  expect(spies.logger).toBeCalledTimes(1);
-  expect(spies.data).toBeCalledTimes(1);
-  expect(spies.appData).toBeCalledTimes(1);
+  expect(spies.logger).toHaveBeenCalledTimes(1);
+  expect(spies.data).toHaveBeenCalledTimes(1);
+  expect(spies.appData).toHaveBeenCalledTimes(1);
 });
 
 test('instantiate operation-scoped provider once per many fields', async () => {
@@ -1323,8 +1323,8 @@ test('instantiate operation-scoped provider once per many fields', async () => {
     q2: 'q2',
   });
 
-  expect(constructor).toBeCalledTimes(1);
-  expect(log).toBeCalledTimes(2);
+  expect(constructor).toHaveBeenCalledTimes(1);
+  expect(log).toHaveBeenCalledTimes(2);
 
   constructor.mockClear();
   log.mockClear();
@@ -1345,8 +1345,8 @@ test('instantiate operation-scoped provider once per many fields', async () => {
     m2: 'm2',
   });
 
-  expect(constructor).toBeCalledTimes(1);
-  expect(log).toBeCalledTimes(2);
+  expect(constructor).toHaveBeenCalledTimes(1);
+  expect(log).toHaveBeenCalledTimes(2);
 });
 
 test('Last operation-scoped provider in the list wins', async () => {

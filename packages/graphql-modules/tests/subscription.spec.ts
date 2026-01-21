@@ -173,5 +173,5 @@ test('Operation-Scope provider instantiated on every subscription', async () => 
     },
   });
 
-  expect(spies.posts).toBeCalledTimes(3);
+  expect(spies.posts).toHaveBeenCalledTimes(3);
 });
