@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "next build",
+    "build": "next build --turbopack || next build --webpack",
     "dev": "next --turbopack || next --webpack",
     "pagefind": "pagefind --site .next/server/app --output-path out/_pagefind",
     "postbuild": "next-sitemap && yarn pagefind",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@theguild/components": "^9.1.2",
-    "next": "15.4.10",
+    "next": "16.1.4",
     "next-sitemap": "4.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
