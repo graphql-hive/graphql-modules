@@ -8,7 +8,7 @@
     "typescript",
     "the-guild"
   ],
-  "version": "3.1.1",
+  "version": "3.1.2",
   "author": "Kamil Kisiela",
   "license": "MIT",
   "sideEffects": false,

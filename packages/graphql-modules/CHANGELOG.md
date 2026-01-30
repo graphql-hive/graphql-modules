@@ -1,5 +1,18 @@
 # graphql-modules
 
+## 3.1.2
+
+### Patch Changes
+
+- [#2607](https://github.com/graphql-hive/graphql-modules/pull/2607) [`3274c04`](https://github.com/graphql-hive/graphql-modules/commit/3274c0498771277f92f9e0f7a48e9a7aa162d642) Thanks [@renovate](https://github.com/apps/renovate)! - dependencies updates:
+  - Updated dependency [`ramda@^0.31.0` ↗︎](https://www.npmjs.com/package/ramda/v/0.31.0) (from `^0.30.0`, in `dependencies`)
+
+- [#2626](https://github.com/graphql-hive/graphql-modules/pull/2626) [`68c2cb4`](https://github.com/graphql-hive/graphql-modules/commit/68c2cb414b39849335de5dcc2460668cd7aefcc8) Thanks [@renovate](https://github.com/apps/renovate)! - dependencies updates:
+  - Updated dependency [`@graphql-tools/wrap@^11.0.0` ↗︎](https://www.npmjs.com/package/@graphql-tools/wrap/v/11.0.0) (from `^10.0.0`, in `dependencies`)
+
+- [#2642](https://github.com/graphql-hive/graphql-modules/pull/2642) [`dac3288`](https://github.com/graphql-hive/graphql-modules/commit/dac3288316be44c32cea8042532c5f0d6d48dca9) Thanks [@renovate](https://github.com/apps/renovate)! - dependencies updates:
+  - Updated dependency [`ramda@^0.32.0` ↗︎](https://www.npmjs.com/package/ramda/v/0.32.0) (from `^0.31.0`, in `dependencies`)
+
 ## 3.1.1
 
 ### Patch Changes
@@ -25,7 +38,6 @@
 ### Patch Changes
 
 - [#2479](https://github.com/Urigo/graphql-modules/pull/2479) [`482499a`](https://github.com/Urigo/graphql-modules/commit/482499a6b288e716a519ef4068a8e74de1b2c45e) Thanks [@renovate](https://github.com/apps/renovate)! - dependencies updates:
-
   - Updated dependency [`ramda@^0.30.0` ↗︎](https://www.npmjs.com/package/ramda/v/0.30.0) (from `^0.29.0`, in `dependencies`)
 
 ## 2.4.1
@@ -61,7 +73,6 @@
 ### Patch Changes
 
 - [#2338](https://github.com/Urigo/graphql-modules/pull/2338) [`4d9150f0`](https://github.com/Urigo/graphql-modules/commit/4d9150f0f46db32fe35259c74caabe6b36d8a13b) Thanks [@renovate](https://github.com/apps/renovate)! - dependencies updates:
-
   - Updated dependency [`@graphql-tools/schema@^10.0.0` ↗︎](https://www.npmjs.com/package/@graphql-tools/schema/v/10.0.0) (from `^9.0.0`, in `dependencies`)
   - Updated dependency [`@graphql-tools/wrap@^10.0.0` ↗︎](https://www.npmjs.com/package/@graphql-tools/wrap/v/10.0.0) (from `^9.0.0`, in `dependencies`)
 
@@ -79,7 +90,6 @@
 ### Patch Changes
 
 - [#2233](https://github.com/Urigo/graphql-modules/pull/2233) [`1d6b7fb7`](https://github.com/Urigo/graphql-modules/commit/1d6b7fb7a7c9021f4a052825a0951ab948ef684f) Thanks [@renovate](https://github.com/apps/renovate)! - dependencies updates:
-
   - Updated dependency [`@graphql-tools/schema@^9.0.0` ↗︎](https://www.npmjs.com/package/@graphql-tools/schema/v/^9.0.0) (was `^8.3.1`, in `dependencies`)
   - Updated dependency [`@graphql-tools/wrap@^9.0.0` ↗︎](https://www.npmjs.com/package/@graphql-tools/wrap/v/^9.0.0) (was `^8.3.1`, in `dependencies`)
 
