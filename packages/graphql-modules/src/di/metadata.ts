@@ -35,3 +35,7 @@ export function ensureInjectableMetadata(type: Type<any>) {
     (type as any)[INJECTABLE] = meta;
   }
 }
+
+export function hasInjectableMetadata(type: Type<any>) {
+  return !!(type as any)[INJECTABLE];
+}
