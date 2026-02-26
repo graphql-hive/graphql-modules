@@ -43,7 +43,7 @@
     "babel-jest": "30.2.0",
     "@typescript-eslint/eslint-plugin": "8.56.1",
     "@typescript-eslint/parser": "8.56.1",
-    "@apollo/server": "4.9.3",
+    "@apollo/server": "5.4.0",
     "apollo-server-express": "3.13.0",
     "apollo-datasource-rest": "3.7.0",
     "artillery": "2.0.30",
