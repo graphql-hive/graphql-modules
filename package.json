@@ -55,7 +55,7 @@
     "cross-env": "10.1.0",
     "dataloader": "2.2.3",
     "graphql-jit": "0.8.7",
-    "eslint": "9.39.3",
+    "eslint": "9.39.4",
     "express": "5.2.1",
     "express-graphql": "0.12.0",
     "globby": "16.1.1",
