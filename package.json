@@ -55,7 +55,7 @@
     "cross-env": "10.1.0",
     "dataloader": "2.2.3",
     "graphql-jit": "0.8.7",
-    "eslint": "9.39.3",
+    "eslint": "9.39.4",
     "express": "5.2.1",
     "express-graphql": "0.12.0",
     "globby": "16.1.1",
@@ -78,7 +78,7 @@
     "rollup": "4.59.0",
     "esbuild": "0.27.3",
     "qs": "6.15.0",
-    "tar": "7.5.10",
+    "tar": "7.5.11",
     "playwright": "1.58.2",
     "tmp": "0.2.5",
     "tsup": "8.5.1"
