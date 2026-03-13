@@ -70,13 +70,13 @@
     "reflect-metadata": "0.2.2",
     "ts-jest": "29.4.6",
     "ts-node": "10.9.2",
-    "wrangler": "4.71.0",
+    "wrangler": "4.73.0",
     "typescript": "5.9.3",
     "ws": "8.19.0"
   },
   "resolutions": {
     "rollup": "4.59.0",
-    "esbuild": "0.27.3",
+    "esbuild": "0.27.4",
     "qs": "6.15.0",
     "tar": "7.5.11",
     "playwright": "1.58.2",
