@@ -3197,22 +3197,22 @@
   dependencies:
     giscus "^1.6.0"
 
-"@graphql-tools/batch-execute@^10.0.5":
-  version "10.0.5"
-  resolved "https://registry.yarnpkg.com/@graphql-tools/batch-execute/-/batch-execute-10.0.5.tgz#0ad010fb6a415ebf1c4386f041e7b46299c5d416"
-  integrity sha512-dL13tXkfGvAzLq2XfzTKAy9logIcltKYRuPketxdh3Ok3U6PN1HKMCHfrE9cmtAsxD96/8Hlghz5AtM+LRv/ig==
+"@graphql-tools/batch-execute@^10.0.6":
+  version "10.0.6"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/batch-execute/-/batch-execute-10.0.6.tgz#2a809798ef67e549d7ebbd250362f9f988086173"
+  integrity sha512-oT9rHn1WQMMgK/xRjz8+LKnRUVZ/YIsKBbJBuXgsSLM33I1O7diohmLku58matpqh9sc5RkRKEubwf9BuydUSw==
   dependencies:
     "@graphql-tools/utils" "^11.0.0"
     "@whatwg-node/promise-helpers" "^1.3.2"
     dataloader "^2.2.3"
     tslib "^2.8.1"
 
-"@graphql-tools/delegate@^12.0.9":
-  version "12.0.9"
-  resolved "https://registry.yarnpkg.com/@graphql-tools/delegate/-/delegate-12.0.9.tgz#3c15a873a636b09a66a13ca600ec3fce0e4492ff"
-  integrity sha512-ugJCiJb4w3bmdUbAz+nKyVVuwzzoy6BZHQ4BJXpAx1i5KIEhSevIkMYq3CZo7drCZf6FMIpcKBxv99uIhzCvhA==
+"@graphql-tools/delegate@^12.0.10":
+  version "12.0.10"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/delegate/-/delegate-12.0.10.tgz#077e9086c8dca580328456938cadf74c3d71a212"
+  integrity sha512-KgPR7jykDbVgvGH3ZvhQg7+3DxwvC5Xmf3jk8/wNCO6nbtUmuUy/aVLf0BqMY3v+Q07zffcMxhqXKc3S6CWjpg==
   dependencies:
-    "@graphql-tools/batch-execute" "^10.0.5"
+    "@graphql-tools/batch-execute" "^10.0.6"
     "@graphql-tools/executor" "^1.4.13"
     "@graphql-tools/schema" "^10.0.29"
     "@graphql-tools/utils" "^11.0.0"
@@ -3333,11 +3333,11 @@
     tslib "^2.4.0"
 
 "@graphql-tools/wrap@^11.0.0":
-  version "11.1.9"
-  resolved "https://registry.yarnpkg.com/@graphql-tools/wrap/-/wrap-11.1.9.tgz#25280d9e86a2c8fa069a9b6424094603c8edd86f"
-  integrity sha512-dSjBNCTPS8W7lWHDgIEgY0MEDwZi1GkqTfl7bJMDs/dJfKojj4Do74LN5QJbP/bIIwJakEwVUMPA8RUYVBP9eQ==
+  version "11.1.10"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/wrap/-/wrap-11.1.10.tgz#6f8c4471e8c1d5c4d5a1c74fd753ce7158f1b7ea"
+  integrity sha512-N0pjYhhKwjWuWEDpKynt1NyMLNULGYhDQjZiz/tZNYunpfxr2+mFkx79sDlAA8epZesdAUZiDzWXSwnDnDvkdg==
   dependencies:
-    "@graphql-tools/delegate" "^12.0.9"
+    "@graphql-tools/delegate" "^12.0.10"
     "@graphql-tools/schema" "^10.0.29"
     "@graphql-tools/utils" "^11.0.0"
     "@whatwg-node/promise-helpers" "^1.3.2"
@@ -11514,16 +11514,16 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.2.4.tgz#eca284f75d2965079309dc0ad9255abb2ebc1632"
   integrity sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==
 
-lint-staged@16.3.3:
-  version "16.3.3"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-16.3.3.tgz#ce5c95b5623cca295f8f4251f00c0642c7e84976"
-  integrity sha512-RLq2koZ5fGWrx7tcqx2tSTMQj4lRkfNJaebO/li/uunhCJbtZqwTuwPHpgIimAHHi/2nZIiGrkCHDCOeR1onxA==
+lint-staged@16.4.0:
+  version "16.4.0"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-16.4.0.tgz#a00b0e3abff59239cef6d7d9341e8f8473308e23"
+  integrity sha512-lBWt8hujh/Cjysw5GYVmZpFHXDCgZzhrOm8vbcUdobADZNOK/bRshr2kM3DfgrrtR1DQhfupW9gnIXOfiFi+bw==
   dependencies:
     commander "^14.0.3"
     listr2 "^9.0.5"
-    micromatch "^4.0.8"
+    picomatch "^4.0.3"
     string-argv "^0.3.2"
-    tinyexec "^1.0.2"
+    tinyexec "^1.0.4"
     yaml "^2.8.2"
 
 listr2@^9.0.5:
@@ -14866,10 +14866,10 @@ tinyexec@^0.3.2:
   resolved "https://registry.yarnpkg.com/tinyexec/-/tinyexec-0.3.2.tgz#941794e657a85e496577995c6eef66f53f42b3d2"
   integrity sha512-KQQR9yN7R5+OSwaK0XQoj22pwHoTlgYqmUscPYoknOoWCWfj/5/ABTMRi69FrKU5ffPVh5QcFikpWJI/P1ocHA==
 
-tinyexec@^1.0.1, tinyexec@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/tinyexec/-/tinyexec-1.0.2.tgz#bdd2737fe2ba40bd6f918ae26642f264b99ca251"
-  integrity sha512-W/KYk+NFhkmsYpuHq5JykngiOCnxeVL8v8dFnqxSD8qEEdRfXk1SDM6JzNqcERbcGYj9tMrDQBYV9cjgnunFIg==
+tinyexec@^1.0.1, tinyexec@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/tinyexec/-/tinyexec-1.0.4.tgz#6c60864fe1d01331b2f17c6890f535d7e5385408"
+  integrity sha512-u9r3uZC0bdpGOXtlxUIdwf9pkmvhqJdrVCH9fapQtgy/OeTTMZ1nqH7agtvEfmGui6e1XxjcdrlxvxJvc3sMqw==
 
 tinyglobby@^0.2.11, tinyglobby@^0.2.14, tinyglobby@^0.2.15:
   version "0.2.15"
