@@ -34,7 +34,7 @@ jobs:
       - name: Setup env
         uses: the-guild-org/shared-config/setup@main
         with:
-          nodeVersion: 23
+          nodeVersion: 24
       - name: Use GraphQL v${{matrix.graphql_version}}
         run: node ./scripts/match-graphql.js ${{matrix.graphql_version}} && yarn install --no-frozen-lockfile
       - name: Type Check
@@ -80,7 +80,7 @@ jobs:
       - name: Setup env
         uses: the-guild-org/shared-config/setup@main
         with:
-          nodeVersion: 23
+          nodeVersion: 24
       - name: Build Packages
         run: yarn build
       - name: Test ESM
