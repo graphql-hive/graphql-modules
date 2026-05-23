@@ -63,7 +63,33 @@ export function createContextBuilder({
       });
     }
 
-    let appContext: GraphQLModules.AppContext;
+    // See https://github.com/graphql-hive/graphql-modules/pull/2681
+    //
+    // Heavy per-operation values (the user-supplied `context`, and the
+    // `appContext` we derive from it) are reachable via this function's
+    // closure scope, which is shared by every closure created below of it —
+    // including the one used by AsyncLocalStorae frame.
+    //
+    // Since https://github.com/nodejs/node/pull/48528, any async resource
+    // scheduled while we're inside that `AsyncLocalStorage.run` (like global setTimeout,
+    // an telemetry exporter timer, a deferred promise reaction, …)
+    // snapshots and captures the current `AsyncContextFrame`.
+    //
+    // If that resource outlives the operation (=defined globally, or just have a longer lifetime),
+    // then the snapshot keeps the AsyncLocalStorage-stored object alive, which keeps this scope alive — which
+    // pins `context` forever.
+    //
+    // Routing the heavy values through a mutable holder lets `ɵdestroy`
+    // detach them from the (still pinned) scope by nulling the holder's
+    // properties; the closures continue to exist but no longer reach
+    // anything that matters.
+    const refs: {
+      context: GraphQLModules.GlobalContext | undefined;
+      appContext: GraphQLModules.AppContext | undefined;
+    } = {
+      context,
+      appContext: undefined,
+    };
 
     attachGlobalProvidersMap({
       injector: appInjector,
@@ -75,7 +101,8 @@ export function createContextBuilder({
 
     appInjector.setExecutionContextGetter(function executionContextGetter() {
       return (
-        async_context.getAsyncContext()?.getApplicationContext() || appContext
+        async_context.getAsyncContext()?.getApplicationContext() ||
+        refs.appContext
       );
     } as any);
 
@@ -83,7 +110,7 @@ export function createContextBuilder({
       return function moduleExecutionContextGetter() {
         return (
           async_context.getAsyncContext()?.getModuleContext(moduleId) ||
-          getModuleContext(moduleId, context)
+          (refs.context ? getModuleContext(moduleId, refs.context) : undefined)!
         );
       };
     }
@@ -97,13 +124,23 @@ export function createContextBuilder({
     // As the name of the Injector says, it's an Operation scoped Injector
     // Application level
     // Operation scoped - means it's created and destroyed on every GraphQL Operation
+    //
+    // The CONTEXT provider used to be `useValue: context` — but a useValue
+    // provider's resolved factory closure captures `context`,
+    // creating an independent retention path (Provider → ResolvedFactory →
+    // factory closure → useValue) that `ɵdestroy` cannot reach.
+    //
+    // Switching to a `useFactory` that reads through the `refs` holder routes that
+    // path through the same indirection as the rest of the scope, so
+    // nulling `refs.context` in `ɵdestroy` also severs the provider path.
     const operationAppInjector = ReflectiveInjector.createFromResolved({
       name: 'App (Operation Scope)',
       providers: appLevelOperationProviders.concat(
         ReflectiveInjector.resolve([
           {
             provide: CONTEXT,
-            useValue: context,
+            useFactory: () => refs.context,
+            deps: [],
           },
         ])
       ),
@@ -111,7 +148,7 @@ export function createContextBuilder({
     });
 
     // Create a context for application-level ExecutionContext
-    appContext = merge(context, {
+    refs.appContext = merge(refs.context!, {
       injector: operationAppInjector,
     });
 
@@ -186,6 +223,32 @@ export function createContextBuilder({
           }
         });
         contextCache = {};
+        providersToDestroy = [];
+
+        // Detach every closure-captured path from the user-supplied
+        // `context` so a pinned AsyncContextFrame snapshot can no
+        // longer keep it in memory.
+        refs.context = undefined;
+        refs.appContext = undefined;
+
+        // `sharedContext` is exposed as `env.context`,
+        //  so we keep its identity but strip its data fields
+        for (const key of Object.keys(sharedContext)) {
+          if (key !== 'ɵgetModuleContext') {
+            delete (sharedContext as any)[key];
+          }
+        }
+
+        // Drop the operation-scoped injector's resolved-instance
+        // cache AND its static provider configs
+        const op = operationAppInjector as unknown as {
+          _providers: unknown[];
+          _objs: unknown[];
+          _keyIds: unknown[];
+        };
+        op._providers.length = 0;
+        op._objs.length = 0;
+        op._keyIds.length = 0;
       }),
       ɵinjector: operationAppInjector,
       context: sharedContext,
@@ -197,10 +260,12 @@ export function createContextBuilder({
         return async_context.runWithAsyncContext(
           {
             getApplicationContext() {
-              return appContext;
+              return refs.appContext!;
             },
             getModuleContext(moduleId) {
-              return getModuleContext(moduleId, context);
+              return refs.context
+                ? getModuleContext(moduleId, refs.context)
+                : (undefined as any);
             },
           },
           cb,
