@@ -121,25 +121,63 @@ export function createContextBuilder({
       );
     });
 
+    // Builds a getter-based view of `refs.context` on `target` — every
+    // top-level property of the user's `context` becomes a get/set
+    // accessor that delegates to `refs.context` dynamically. The view
+    // therefore holds no user data of its own; once `refs.context` is
+    // nulled (in `ɵdestroy`), all reads return `undefined` and the
+    // user's original context object is unreachable from the view.
+    //
+    // We freeze the key set at construction time to match the existing
+    // behavior of `merge(context, …)`, which is also a shallow spread of
+    // the keys present at that moment.
+    function defineUserContextAccessors(target: any): void {
+      if (!context) return;
+      for (const key of Object.keys(context)) {
+        Object.defineProperty(target, key, {
+          enumerable: true,
+          configurable: true,
+          get: () => (refs.context as any)?.[key],
+          set: (value) => {
+            if (refs.context) {
+              (refs.context as any)[key] = value;
+            }
+          },
+        });
+      }
+      for (const sym of Object.getOwnPropertySymbols(context)) {
+        Object.defineProperty(target, sym, {
+          enumerable: true,
+          configurable: true,
+          get: () => (refs.context as any)?.[sym],
+          set: (value) => {
+            if (refs.context) {
+              (refs.context as any)[sym] = value;
+            }
+          },
+        });
+      }
+    }
+
+    // The cached `CONTEXT` injection value. `ReflectiveInjector` caches
+    // the resolved instance forever in `_objs[i]`, so if we returned the
+    // raw `refs.context` here that cache would pin the user's context
+    // object even after `ɵdestroy` nulls `refs.context`. Returning a
+    // view that *reads through* `refs.context` keeps the cached object
+    // payload-free.
+    const contextView: GraphQLModules.GlobalContext = {} as any;
+    defineUserContextAccessors(contextView);
+
     // As the name of the Injector says, it's an Operation scoped Injector
     // Application level
     // Operation scoped - means it's created and destroyed on every GraphQL Operation
-    //
-    // The CONTEXT provider used to be `useValue: context` — but a useValue
-    // provider's resolved factory closure captures `context`,
-    // creating an independent retention path (Provider → ResolvedFactory →
-    // factory closure → useValue) that `ɵdestroy` cannot reach.
-    //
-    // Switching to a `useFactory` that reads through the `refs` holder routes that
-    // path through the same indirection as the rest of the scope, so
-    // nulling `refs.context` in `ɵdestroy` also severs the provider path.
     const operationAppInjector = ReflectiveInjector.createFromResolved({
       name: 'App (Operation Scope)',
       providers: appLevelOperationProviders.concat(
         ReflectiveInjector.resolve([
           {
             provide: CONTEXT,
-            useFactory: () => refs.context,
+            useFactory: () => contextView,
             deps: [],
           },
         ])
@@ -195,15 +233,18 @@ export function createContextBuilder({
       return contextCache[moduleId];
     }
 
-    const sharedContext = merge(
-      // We want to pass the received context
-      context || {},
-      {
-        // Here's something very crutial
-        // It's a function that is used in module's context creation
-        ɵgetModuleContext: getModuleContext,
-      }
-    );
+    // sharedContext — exposed publicly as `env.context`. Same shape as a
+    // `merge(context, { ɵgetModuleContext })` would produce, but its
+    // user-context fields are getter accessors over `refs.context`
+    // (see `defineUserContextAccessors` above) rather than independent
+    // shallow copies. That way once `refs.context` is nulled the user
+    // payload is unreachable from `sharedContext` too, without us having
+    // to mutate the object's keys in `ɵdestroy`.
+    const sharedContext: InternalAppContext = {
+      // It's a function that is used in module's context creation
+      ɵgetModuleContext: getModuleContext,
+    } as any;
+    defineUserContextAccessors(sharedContext);
 
     attachGlobalProvidersMap({
       injector: operationAppInjector,
@@ -225,30 +266,26 @@ export function createContextBuilder({
         contextCache = {};
         providersToDestroy = [];
 
-        // Detach every closure-captured path from the user-supplied
-        // `context` so a pinned AsyncContextFrame snapshot can no
-        // longer keep it in memory.
+        // All retention paths from this closure scope to the
+        // user-supplied `context` route through `refs`:
+        //   - `sharedContext` (= env.context) and the cached CONTEXT
+        //     injector value are getter-based views over `refs.context`,
+        //   - `appInjector._executionContextGetter` reads through
+        //     `refs.appContext`.
+        // Nulling the holder slots is the only cleanup required —
+        // public-facing identities (`sharedContext`, `ɵinjector`) keep
+        // working for any post-destroy reads, but the heavy user
+        // payload becomes unreachable from this scope.
         refs.context = undefined;
         refs.appContext = undefined;
-
-        // `sharedContext` is exposed as `env.context`,
-        //  so we keep its identity but strip its data fields
-        for (const key of Object.keys(sharedContext)) {
-          if (key !== 'ɵgetModuleContext') {
-            delete (sharedContext as any)[key];
-          }
-        }
-
-        // Drop the operation-scoped injector's resolved-instance
-        // cache AND its static provider configs
-        const op = operationAppInjector as unknown as {
-          _providers: unknown[];
-          _objs: unknown[];
-          _keyIds: unknown[];
-        };
-        op._providers.length = 0;
-        op._objs.length = 0;
-        op._keyIds.length = 0;
+        // The function parameter `context` is itself a captured binding
+        // in this lexical scope. Even though no surviving closure reads
+        // it directly (everything goes through `refs`), V8's scope info
+        // may keep the binding alive for as long as any closure in this
+        // scope is reachable. Reassigning it here makes that binding
+        // empty too — without this, the original user `context` object
+        // remains pinned by the scope itself.
+        context = undefined as any;
       }),
       ɵinjector: operationAppInjector,
       context: sharedContext,
