@@ -893,6 +893,123 @@ test('accessing a singleton provider context during another asynchronous executi
   });
 });
 
+test('accessing a singleton provider context during another asynchronous execution with operation controllers', async () => {
+  @Injectable({ scope: Scope.Singleton })
+  class IdentifierProvider {
+    @ExecutionContext()
+    private context: any;
+
+    getId() {
+      return this.context.identifier;
+    }
+  }
+
+  const { promise: gettingBefore, resolve: gotBefore } = createDeferred();
+  const { promise: waitForGettingAfter, resolve: getAfter } = createDeferred();
+
+  const mod = createModule({
+    id: 'mod',
+    providers: [IdentifierProvider],
+    typeDefs: gql`
+      type Query {
+        getAsyncIdentifiers: Identifiers!
+      }
+
+      type Identifiers {
+        before: String!
+        after: String!
+      }
+    `,
+    resolvers: {
+      Query: {
+        async getAsyncIdentifiers(
+          _0: unknown,
+          _1: unknown,
+          context: GraphQLModules.Context
+        ) {
+          const before = context.injector.get(IdentifierProvider).getId();
+          gotBefore();
+          await waitForGettingAfter;
+          const after = context.injector.get(IdentifierProvider).getId();
+          return { before, after };
+        },
+      },
+    },
+  });
+
+  const app = createApplication({
+    modules: [mod],
+  });
+
+  const document = gql`
+    {
+      getAsyncIdentifiers {
+        before
+        after
+      }
+    }
+  `;
+
+  const firstController = app.createOperationController({
+    context: {
+      identifier: 'first',
+    },
+    autoDestroy: false,
+  });
+
+  const firstResult$ = testkit.execute(
+    app,
+    {
+      document,
+    },
+    {
+      controller: firstController,
+    }
+  );
+
+  await gettingBefore;
+
+  const secondController = app.createOperationController({
+    context: {
+      identifier: 'second',
+    },
+    autoDestroy: false,
+  });
+
+  const secondResult$ = testkit.execute(
+    app,
+    {
+      document,
+    },
+    {
+      controller: secondController,
+    }
+  );
+
+  getAfter();
+
+  await expect(firstResult$).resolves.toEqual({
+    data: {
+      getAsyncIdentifiers: {
+        before: 'first',
+        after: 'first',
+      },
+    },
+  });
+
+  await expect(secondResult$).resolves.toEqual({
+    data: {
+      getAsyncIdentifiers: {
+        before: 'second',
+        after: 'second',
+      },
+    },
+  });
+
+  firstController.destroy();
+  secondController.destroy();
+});
+
 function createDeferred<T = void>() {
   let resolve!: (val: T) => void, reject!: (err: unknown) => void;
   const promise = new Promise<T>((res, rej) => {
