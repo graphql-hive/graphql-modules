@@ -79,7 +79,7 @@ export function subscriptionCreator({
       }
 
       if (options?.controller) {
-        return perform(options.controller);
+        return options.controller.runWithContext(perform);
       }
 
       return contextBuilder(

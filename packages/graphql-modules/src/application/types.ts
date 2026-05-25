@@ -11,6 +11,7 @@ import type { MiddlewareMap } from '../shared/middleware';
 import type { ApolloRequestContext } from './apollo';
 import type { Single } from '../shared/types';
 import type { InternalAppContext } from './application';
+import type { ExecutionContextEnv } from './context';
 
 type Execution = typeof execute;
 type Subscription = typeof subscribe;
@@ -96,6 +97,12 @@ export interface OperationController {
    * @internal
    */
   ɵdestroy(): void;
+  /**
+   * @internal
+   */
+  runWithContext<TReturn = any>(
+    cb: (env: ExecutionContextEnv) => TReturn
+  ): TReturn;
   context: InternalAppContext;
   /**
    * Operation Injector (application)

@@ -9,12 +9,22 @@ export function operationControllerCreator(options: {
   return (input) => {
     const operation = contextBuilder(input.context);
     const ɵdestroy = input.autoDestroy ? operation.ɵdestroy : () => {};
-
-    return {
+    const controller = {
       context: operation.context,
       injector: operation.ɵinjector,
       destroy: operation.ɵdestroy,
       ɵdestroy,
+      runWithContext(cb) {
+        return operation.runWithContext(() =>
+          cb({
+            context: operation.context,
+            ɵdestroy,
+            ɵinjector: operation.ɵinjector,
+          })
+        );
+      },
     };
+
+    return controller;
   };
 }
