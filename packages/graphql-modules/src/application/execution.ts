@@ -64,7 +64,11 @@ export function executionCreator({
       }
 
       if (options?.controller) {
-        return perform(options.controller);
+        // Wrap `perform` in the controller's own ALS frame so that
+        // `@ExecutionContext()` reads inside the resolver — including
+        // after an `await`.
+        const controller = options.controller;
+        return controller.ɵrunWithContext(() => perform(controller));
       }
 
       return contextBuilder(

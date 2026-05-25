@@ -15,6 +15,7 @@ export function operationControllerCreator(options: {
       injector: operation.ɵinjector,
       destroy: operation.ɵdestroy,
       ɵdestroy,
+      ɵrunWithContext: operation.runWithContext,
     };
   };
 }

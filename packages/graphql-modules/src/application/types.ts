@@ -11,6 +11,7 @@ import type { MiddlewareMap } from '../shared/middleware';
 import type { ApolloRequestContext } from './apollo';
 import type { Single } from '../shared/types';
 import type { InternalAppContext } from './application';
+import { ExecutionContextEnv } from './context';
 
 type Execution = typeof execute;
 type Subscription = typeof subscribe;
@@ -101,6 +102,18 @@ export interface OperationController {
    * Operation Injector (application)
    */
   injector: Injector;
+  /**
+   * @internal
+   *
+   * Wraps a callback in this operation's AsyncLocalStorage frame so that
+   * `@ExecutionContext()` reads resolve to *this* operation, not whichever
+   * operation most recently called `contextBuilder`.
+   *
+   * Required for safe concurrent controller-backed executions — without
+   * the wrapper, `appInjector._executionContextGetter` (shared, last-writer
+   * wins) leaks context across overlapping requests after any `await`.
+   */
+  ɵrunWithContext<TReturn>(cb: (env: ExecutionContextEnv) => TReturn): TReturn;
 }
 
 /**
