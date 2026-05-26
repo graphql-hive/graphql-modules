@@ -26,7 +26,6 @@ import { createApplication, createModule, gql, testkit } from '../src';
 // 5 MB payload — large enough so we can spot it easily in memory measurements.
 const PAYLOAD_BYTES = 5 * 1024 * 1024;
 
-// This was a pain to figure out but Claude helped:
 // We can't use  `'x'.repeat(N)` to create a string, because V8 will optimize it and will mark it as constant,
 // So we can't see it in `heapUsed`.
 // The idea here is to allocate a real string on the heap, so it will be considered like a payload we get.
