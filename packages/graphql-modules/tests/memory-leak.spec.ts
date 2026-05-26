@@ -146,7 +146,6 @@ test('does not retain contextValue past operation completion when a long-lived a
 
   const leakedBytes =
     after.heapUsed + after.external - (before.heapUsed + before.external);
-  console.log('leaked memory:  ', leakedBytes);
 
   /// It's ok to have some stuff left, but it should never be such a big number
   // or a full payload of 5MB provided by the user.
