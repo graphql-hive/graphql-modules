@@ -23,6 +23,46 @@ export type ExecutionContextEnv = {
   ɵinjector: Injector;
 };
 
+/**
+ * Installs a getter-based view of `refs.context` onto `target` — every
+ * string/symbol-keyed property of `source` (captured at call time) becomes
+ * an accessor on `target` that delegates to `refs.context` dynamically.
+ *
+ * The view therefore holds no user data of its own; once `refs.context`
+ * is nulled (in `ɵdestroy`), every accessor returns `undefined` and the
+ * original user-context object is no longer reachable from the view.
+ *
+ * The helper lives at module scope (rather than inside `contextBuilder`)
+ * so it doesn't close over the per-operation `context` parameter — that
+ * keeps the operation's V8 scope free of any captured reference to the
+ * user context other than `refs`, which is what makes the leak fix work.
+ */
+function defineUserContextAccessors(
+  target: object,
+  source: GraphQLModules.GlobalContext | undefined,
+  refs: { context: GraphQLModules.GlobalContext | undefined }
+): void {
+  if (source === undefined || source === null) return;
+  const define = (key: string | symbol): void => {
+    Object.defineProperty(target, key, {
+      enumerable: true,
+      configurable: true,
+      get(): unknown {
+        return refs.context === undefined
+          ? undefined
+          : (refs.context as Record<string | symbol, unknown>)[key];
+      },
+      set(value: unknown): void {
+        if (refs.context !== undefined) {
+          (refs.context as Record<string | symbol, unknown>)[key] = value;
+        }
+      },
+    });
+  };
+  for (const key of Object.keys(source)) define(key);
+  for (const sym of Object.getOwnPropertySymbols(source)) define(sym);
+}
+
 export function createContextBuilder({
   appInjector,
   modulesMap,
@@ -121,52 +161,14 @@ export function createContextBuilder({
       );
     });
 
-    // Builds a getter-based view of `refs.context` on `target` — every
-    // top-level property of the user's `context` becomes a get/set
-    // accessor that delegates to `refs.context` dynamically. The view
-    // therefore holds no user data of its own; once `refs.context` is
-    // nulled (in `ɵdestroy`), all reads return `undefined` and the
-    // user's original context object is unreachable from the view.
-    //
-    // We freeze the key set at construction time to match the existing
-    // behavior of `merge(context, …)`, which is also a shallow spread of
-    // the keys present at that moment.
-    function defineUserContextAccessors(target: any): void {
-      if (!context) return;
-      for (const key of Object.keys(context)) {
-        Object.defineProperty(target, key, {
-          enumerable: true,
-          configurable: true,
-          get: () => (refs.context as any)?.[key],
-          set: (value) => {
-            if (refs.context) {
-              (refs.context as any)[key] = value;
-            }
-          },
-        });
-      }
-      for (const sym of Object.getOwnPropertySymbols(context)) {
-        Object.defineProperty(target, sym, {
-          enumerable: true,
-          configurable: true,
-          get: () => (refs.context as any)?.[sym],
-          set: (value) => {
-            if (refs.context) {
-              (refs.context as any)[sym] = value;
-            }
-          },
-        });
-      }
-    }
-
     // The cached `CONTEXT` injection value. `ReflectiveInjector` caches
     // the resolved instance forever in `_objs[i]`, so if we returned the
     // raw `refs.context` here that cache would pin the user's context
     // object even after `ɵdestroy` nulls `refs.context`. Returning a
     // view that *reads through* `refs.context` keeps the cached object
-    // payload-free.
-    const contextView: GraphQLModules.GlobalContext = {} as any;
-    defineUserContextAccessors(contextView);
+    // payload-free. See `defineUserContextAccessors` at module scope.
+    const contextView: GraphQLModules.GlobalContext = Object.create(null);
+    defineUserContextAccessors(contextView, context, refs);
 
     // As the name of the Injector says, it's an Operation scoped Injector
     // Application level
@@ -236,15 +238,15 @@ export function createContextBuilder({
     // sharedContext — exposed publicly as `env.context`. Same shape as a
     // `merge(context, { ɵgetModuleContext })` would produce, but its
     // user-context fields are getter accessors over `refs.context`
-    // (see `defineUserContextAccessors` above) rather than independent
-    // shallow copies. That way once `refs.context` is nulled the user
+    // (see `defineUserContextAccessors` at module scope) rather than
+    // independent shallow copies. Once `refs.context` is nulled the user
     // payload is unreachable from `sharedContext` too, without us having
     // to mutate the object's keys in `ɵdestroy`.
     const sharedContext: InternalAppContext = {
       // It's a function that is used in module's context creation
       ɵgetModuleContext: getModuleContext,
-    } as any;
-    defineUserContextAccessors(sharedContext);
+    };
+    defineUserContextAccessors(sharedContext, context, refs);
 
     attachGlobalProvidersMap({
       injector: operationAppInjector,
