@@ -11,7 +11,7 @@
   "repository": {
     "url": "https://github.com/graphql-hive/graphql-modules"
   },
-  "version": "3.1.1",
+  "version": "3.1.2",
   "author": "Kamil Kisiela",
   "license": "MIT",
   "sideEffects": false,
