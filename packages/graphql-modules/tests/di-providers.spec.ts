@@ -1398,3 +1398,144 @@ test('Last operation-scoped provider in the list wins', async () => {
   expect(result.errors).not.toBeDefined();
   expect(result.data?.token).toEqual('last');
 });
+
+test('accessing global singleton provider (app) from global singleton provider (module)', async () => {
+  @Injectable({
+    scope: Scope.Singleton,
+    global: true,
+  })
+  class AppData {
+    public async uppercase(text: string) {
+      return text.toUpperCase();
+    }
+  }
+
+  @Injectable({
+    scope: Scope.Singleton,
+    global: true,
+  })
+  class ModuleData {
+    constructor(private appData: AppData) {}
+
+    public async uppercase(text: string) {
+      return this.appData.uppercase(text);
+    }
+  }
+
+  const fooModule = createModule({
+    id: 'foo',
+    providers: [ModuleData],
+    typeDefs: gql`
+      type Query {
+        uppercase(text: String!): String!
+      }
+    `,
+    resolvers: {
+      Query: {
+        uppercase(
+          _: {},
+          { text }: { text: string },
+          { injector }: GraphQLModules.ModuleContext
+        ) {
+          return injector.get(ModuleData).uppercase(text);
+        },
+      },
+    },
+  });
+
+  const app = createApplication({
+    modules: [fooModule],
+    providers: [AppData],
+  });
+
+  const result = await testkit.execute(app, {
+    contextValue: {},
+    variableValues: {
+      text: 'gil',
+    },
+    document: gql`
+      query up($text: String!) {
+        uppercase(text: $text)
+      }
+    `,
+  });
+
+  expect(result.errors).not.toBeDefined();
+  expect(result.data?.uppercase).toBe('GIL');
+});
+
+test('accessing global singleton provider (app) from global singleton provider (module) that depends on non-global singleton (app)', async () => {
+  @Injectable({
+    scope: Scope.Singleton,
+  })
+  class TextTransforms {
+    uppercase(text: string) {
+      return text.toUpperCase();
+    }
+  }
+
+  @Injectable({
+    scope: Scope.Singleton,
+    global: true,
+  })
+  class AppData {
+    constructor(private textTransforms: TextTransforms) {}
+
+    public async uppercase(text: string) {
+      return this.textTransforms.uppercase(text);
+    }
+  }
+
+  @Injectable({
+    scope: Scope.Singleton,
+    global: true,
+  })
+  class ModuleData {
+    constructor(private appData: AppData) {}
+
+    public async uppercase(text: string) {
+      return this.appData.uppercase(text);
+    }
+  }
+
+  const fooModule = createModule({
+    id: 'foo',
+    providers: [ModuleData],
+    typeDefs: gql`
+      type Query {
+        uppercase(text: String!): String!
+      }
+    `,
+    resolvers: {
+      Query: {
+        uppercase(
+          _: {},
+          { text }: { text: string },
+          { injector }: GraphQLModules.ModuleContext
+        ) {
+          return injector.get(ModuleData).uppercase(text);
+        },
+      },
+    },
+  });
+
+  const app = createApplication({
+    modules: [fooModule],
+    providers: [AppData, TextTransforms],
+  });
+
+  const result = await testkit.execute(app, {
+    contextValue: {},
+    variableValues: {
+      text: 'gil',
+    },
+    document: gql`
+      query up($text: String!) {
+        uppercase(text: $text)
+      }
+    `,
+  });
+
+  expect(result.errors).not.toBeDefined();
+  expect(result.data?.uppercase).toBe('GIL');
+});
