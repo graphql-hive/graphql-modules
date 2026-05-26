@@ -52,7 +52,6 @@ function pinCurrentAsyncContext() {
 }
 
 async function forceFullGC() {
-  // Thanks Claude for this:
   // WeakRefs are not cleared during a microtask checkpoint, so drain
   // microtasks between GCs. Three passes is enough in practice for V8 to
   // both collect the now-unreachable object AND clear the WeakRef cell.
