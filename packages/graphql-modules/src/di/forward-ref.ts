@@ -1,5 +1,6 @@
 import { stringify } from './utils';
 import { Type } from './providers';
+import { hasOwnProperty } from '../shared/utils';
 
 export type ForwardRefFn<T> = () => T;
 
@@ -19,7 +20,7 @@ export function forwardRef<T>(forwardRefFn: ForwardRefFn<T>) {
 export function resolveForwardRef(type: any): any {
   if (
     typeof type === 'function' &&
-    type.hasOwnProperty(forwardRefSymbol) &&
+    hasOwnProperty(type, forwardRefSymbol) &&
     type[forwardRefSymbol] === forwardRef
   ) {
     return (type as ForwardRefFn<any>)();

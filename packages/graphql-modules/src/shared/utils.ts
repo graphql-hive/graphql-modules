@@ -1,5 +1,9 @@
 import { GraphQLSchema } from 'graphql';
 
+export function hasOwnProperty(v:unknown, key:PropertyKey){
+  return Object.prototype.hasOwnProperty.call(v, key);
+}
+
 export function flatten<T>(arr: T[]): T extends (infer A)[] ? A[] : T[] {
   return Array.prototype.concat(...arr) as any;
 }
