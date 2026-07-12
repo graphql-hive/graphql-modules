@@ -22,6 +22,7 @@ export {
   ClassProvider,
   ValueProvider,
   TypeProvider,
+  defineProviders,
   forwardRef,
   InjectionToken,
   Scope,

@@ -1,5 +1,6 @@
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import {
+  Provider,
   ReflectiveInjector,
   onlySingletonProviders,
   onlyOperationProviders,
@@ -58,9 +59,9 @@ export interface InternalAppContext {
  * })
  * ```
  */
-export function createApplication(
-  applicationConfig: ApplicationConfig
-): Application {
+export function createApplication<
+  const TProviders extends Provider[] = Provider[],
+>(applicationConfig: ApplicationConfig<TProviders>): Application {
   function applicationFactory(cfg?: ApplicationConfig): Application {
     const config = cfg || applicationConfig;
     const providers =

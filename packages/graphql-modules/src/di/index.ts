@@ -10,6 +10,7 @@ export {
   Factory,
   FactoryProvider,
   TypeProvider,
+  defineProviders,
   ProviderOptions,
   Scope,
   onlySingletonProviders,

@@ -4,7 +4,11 @@ export const Type = Function;
 
 /// @ts-ignore
 export class InjectionToken<T> {
-  constructor(private _desc: string) {}
+  private readonly _desc: string & { readonly __type?: T };
+
+  constructor(desc: string) {
+    this._desc = desc as string & { readonly __type?: T };
+  }
 
   toString(): string {
     return `InjectionToken ${this._desc}`;
@@ -53,6 +57,36 @@ export type Provider<T = any> =
   | ValueProvider<T>
   | ClassProvider<T>
   | FactoryProvider<T>;
+
+type TokenValue<TToken> = TToken extends
+  | InjectionToken<infer TValue>
+  | Type<infer TValue>
+  | AbstractType<infer TValue>
+  ? TValue
+  : never;
+
+type ValidateValueProvider<TProvider> = TProvider extends {
+  provide: infer TToken;
+  useValue: infer TValue;
+}
+  ? [TValue] extends [TokenValue<TToken>]
+    ? TProvider
+    : never
+  : TProvider;
+
+export type ValidatedProviders<TProviders extends readonly Provider[]> =
+  TProviders & {
+    [TIndex in keyof TProviders]: ValidateValueProvider<TProviders[TIndex]>;
+  };
+
+/**
+ * Preserves provider inference for separately declared provider arrays.
+ */
+export function defineProviders<const TProviders extends Provider[]>(
+  providers: ValidatedProviders<TProviders>
+): TProviders {
+  return providers;
+}
 
 export interface ProviderOptions {
   scope?: Scope;

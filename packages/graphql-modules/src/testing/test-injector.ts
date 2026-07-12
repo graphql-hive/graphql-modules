@@ -1,9 +1,11 @@
 import { Injector, ReflectiveInjector } from '../di/injector';
-import { Provider, TypeProvider } from '../di/providers';
+import { Provider, TypeProvider, ValidatedProviders } from '../di/providers';
 import { CONTEXT } from '../application/tokens';
 import { readInjectableMetadata } from '../di/metadata';
 
-export function testInjector(providers: Provider[]): Injector {
+export function testInjector<const TProviders extends Provider[] = Provider[]>(
+  providers: ValidatedProviders<TProviders>
+): Injector {
   const resolvedProviders = ReflectiveInjector.resolve([
     { provide: CONTEXT, useValue: {} },
     ...providers,

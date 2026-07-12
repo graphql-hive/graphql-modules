@@ -6,6 +6,7 @@ import {
   ExecutionResult,
 } from 'graphql';
 import type { Provider, Injector } from '../di';
+import type { ValidatedProviders } from '../di/providers';
 import type { Resolvers, Module, MockedModule } from '../module/types';
 import type { MiddlewareMap } from '../shared/middleware';
 import type { ApolloRequestContext } from './apollo';
@@ -120,7 +121,7 @@ export interface OperationController {
  * @api
  * Application's configuration object. Represents the first argument of `createApplication` function.
  */
-export interface ApplicationConfig {
+export interface ApplicationConfig<TProviders extends Provider[] = Provider[]> {
   /**
    * A list of GraphQL Modules
    */
@@ -128,7 +129,9 @@ export interface ApplicationConfig {
   /**
    * A list of Providers - read the ["Providers and Tokens"](./di/providers) chapter.
    */
-  providers?: Provider[] | (() => Provider[]);
+  providers?:
+    | ValidatedProviders<TProviders>
+    | (() => ValidatedProviders<TProviders>);
   /**
    * A map of middlewares - read the ["Middlewares"](./advanced/middlewares) chapter.
    */
