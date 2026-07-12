@@ -1,4 +1,5 @@
 import { moduleFactory } from './factory';
+import { Provider } from '../di';
 import { ModuleConfig } from './types';
 
 /**
@@ -21,6 +22,8 @@ import { ModuleConfig } from './types';
  * });
  * ```
  */
-export function createModule(config: ModuleConfig) {
+export function createModule<const TProviders extends Provider[] = Provider[]>(
+  config: ModuleConfig<TProviders>
+) {
   return moduleFactory(config);
 }

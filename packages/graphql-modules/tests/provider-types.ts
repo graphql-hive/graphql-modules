@@ -7,6 +7,9 @@ import {
 } from 'graphql-modules';
 
 const StringToken = new InjectionToken<string>('string');
+declare const StringOrNumberToken:
+  | InjectionToken<string>
+  | InjectionToken<number>;
 
 // @ts-expect-error injection tokens retain their value type
 const incorrectToken: InjectionToken<number> = StringToken;
@@ -30,6 +33,12 @@ createApplication({
   modules: [],
   // @ts-expect-error useValue must match the token value type
   providers: [{ provide: StringToken, useValue: 123 }],
+});
+
+createApplication({
+  modules: [],
+  // @ts-expect-error useValue must be valid for every token in the union
+  providers: [{ provide: StringOrNumberToken, useValue: false }],
 });
 
 createApplication({
