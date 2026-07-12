@@ -79,6 +79,15 @@ export type ValidatedProviders<TProviders extends readonly Provider[]> =
     [TIndex in keyof TProviders]: ValidateValueProvider<TProviders[TIndex]>;
   };
 
+/**
+ * Preserves provider inference for separately declared provider arrays.
+ */
+export function defineProviders<const TProviders extends Provider[]>(
+  providers: ValidatedProviders<TProviders>
+): TProviders {
+  return providers;
+}
+
 export interface ProviderOptions {
   scope?: Scope;
   executionContextIn?: Array<string | symbol>;

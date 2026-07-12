@@ -1,6 +1,7 @@
 import {
   createApplication,
   createModule,
+  defineProviders,
   InjectionToken,
   Provider,
   testkit,
@@ -55,6 +56,21 @@ createApplication({
 const widenedProviders: Provider[] = [{ provide: StringToken, useValue: 123 }];
 
 createApplication({ modules: [], providers: widenedProviders });
+
+const declaredProviders = defineProviders([
+  { provide: StringToken, useValue: 'value' },
+]);
+
+createApplication({ modules: [], providers: declaredProviders });
+
+// @ts-expect-error useValue must match the token value type
+defineProviders([{ provide: StringToken, useValue: 123 }]);
+
+createApplication({
+  modules: [],
+  providers: () =>
+    defineProviders([{ provide: StringToken, useValue: 'value' }]),
+});
 
 createModule({
   id: 'provider-types',

@@ -11,6 +11,34 @@ The building blocks of DI are **Provider**(s) and **InjectionToken**(s).
 
 Dependency Injection is an abstraction over actual objects and values.
 
+<Callout>
+  In direct, inline provider arrays, GraphQL Modules checks that a `useValue`
+  matches its typed `InjectionToken` or class token. Explicitly widening an
+  array to `Provider[]` erases that information. Use `defineProviders` for a
+  separately declared array or provider factory.
+</Callout>
+
+```ts
+const ApiKey = new InjectionToken<string>('api-key')
+
+createApplication({
+  modules: [],
+  providers: [
+    // TypeScript error: number is not assignable to string.
+    { provide: ApiKey, useValue: 123 }
+  ]
+})
+```
+
+```ts
+const providers = defineProviders([{ provide: ApiKey, useValue: 'my-api-key' }])
+
+createApplication({
+  modules: [],
+  providers
+})
+```
+
 There are three kinds of providers:
 
 - [Class provider](#class) - creates an instance of a class
