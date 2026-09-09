@@ -1,0 +1,10 @@
+{
+  "pages": [
+    "type-definitions",
+    "resolvers",
+    "context",
+    "type-safety",
+    "testing"
+  ],
+  "title": "Essentials"
+}
