@@ -1,0 +1,236 @@
+---
+title: Get Started
+---
+
+To start using GraphQL Modules, all you need is to install its package and `graphql`.
+
+<Callout type="warning">
+  We highly recommend to use TypeScript for writing your backend, since it
+  provides support for Reflection (if you plan to use dependency injection) and
+  makes it easier to develop API services.
+</Callout>
+
+## Installation
+
+```sh npm2yarn
+npm i graphql-modules graphql
+```
+
+### Your First GraphQL Module
+
+To create a Module, use `createModule`:
+
+```ts
+import { createModule, gql } from 'graphql-modules'
+
+export const myModule = createModule({
+  id: 'my-module',
+  dirname: __dirname,
+  typeDefs: [
+    gql`
+      type Query {
+        hello: String!
+      }
+    `
+  ],
+  resolvers: {
+    Query: {
+      hello: () => 'world'
+    }
+  }
+})
+```
+
+Each module contains GraphQL Type definitions, unique id and optionally resolvers.
+
+<Callout>
+  That's not everything it can do, Module accepts also Providers ([Dependency
+  Injection](/docs/di/introduction)) and
+  [Middlewares](/docs/advanced/middlewares).
+</Callout>
+
+#### What Happened Here?
+
+We are using `createModule` to declare our module, and name it as `my-module`. Naming is important because it helps you to locate issues in your type definition.
+
+We also added `dirname` and pointed it to `__dirname` to make it simpler later to match the exception to the correct file. It's optional but useful.
+
+Next, there are `typeDefs` and `resolvers` which you should already know if you are familiar with GraphQL. It defines the type we have in that module and the implementation behind it.
+
+At this point, this module acts like a type "capsule" you can load and import to various GraphQL Applications.
+
+### Use Your Module
+
+As mentioned before, Modules create Application, so let's create one. We are importing the module we created earlier, and provide it to the application:
+
+```ts
+import { createApplication } from 'graphql-modules'
+import { myModule } from './my-module'
+
+// This is your application, it contains your GraphQL schema and the implementation of it.
+const application = createApplication({
+  modules: [myModule]
+})
+
+// This is your actual GraphQL schema
+const mySchema = application.schema
+```
+
+<Callout type="warning">
+  Application doesn't allow providing schemas or resolvers, since it's only a
+  loader of your various modules.
+</Callout>
+
+### Use Your Application
+
+Now that you have `Module`, `Application` and you got your `GraphQLSchema`, you need to make it available to consumption.
+
+GraphQL-Modules allow you to do much more, like managing the lifecycle of your execution, encapsulating your HTTP request and more. To do that in the most optimal and flexible way, we need to wrap the GraphQL execution flow. Some GraphQL server's implementation allows this kind of flexibility, and some don't.
+
+> But we got you covered, and provided solutions for all popular GraphQL server implementations.
+
+Your GraphQL `Application` exposes `createExecution` and `createSubscription` methods, which are just plug-and-play replacements for the default functions from `graphql-js`.
+
+<Tabs items={['GraphQL Yoga', 'Apollo Server', 'Express GraphQL', 'GraphQL Helix', 'Other servers?']}>
+<Tabs.Tab>
+
+If you are using [GraphQL Yoga](https://the-guild.dev/graphql/yoga-server), you can use [`useGraphQLModules`](https://envelop.dev/plugins/use-graphql-modules) plugin from Envelop.
+
+```ts
+import { createServer } from 'node:http'
+import { createYoga } from 'graphql-yoga'
+import { useGraphQLModules } from '@envelop/graphql-modules'
+import { application } from './application'
+
+const yoga = createYoga({
+  plugins: [useGraphQLModules(application)]
+})
+
+const server = createServer(yoga)
+
+server.listen(4000, () => {
+  console.log(`🚀 Server ready`)
+})
+```
+
+</Tabs.Tab>
+
+<Tabs.Tab>
+If you are using [Apollo-Server](https://github.com/apollographql/apollo-server), you can use `createApolloExecutor` to get an executor that is adapted for this server, and integrates with it perfectly.
+
+```ts
+import { ApolloServer } from 'apollo-server'
+import { application } from './application'
+
+const executor = application.createApolloExecutor()
+const schema = application.schema
+
+const server = new ApolloServer({ schema, executor })
+
+server.listen().then(({ url }) => {
+  console.log(`🚀 Server ready at ${url}`)
+})
+```
+
+</Tabs.Tab>
+
+<Tabs.Tab>
+If you are using [Express-GraphQL](https://github.com/graphql/express-graphql), here's how you do it:
+
+```ts
+import express from 'express'
+import graphqlHTTP from 'express-graphql'
+import { application } from './application'
+
+const execute = application.createExecution()
+const schema = application.schema
+
+const server = express()
+
+server.use(
+  '/',
+  graphqlHTTP({
+    schema,
+    customExecuteFn: execute,
+    graphiql: true
+  })
+)
+
+server.listen(4000, () => {
+  console.log(`🚀 Server ready at http://localhost:4000/`)
+})
+```
+
+</Tabs.Tab>
+
+<Tabs.Tab>
+
+If you are using [GraphQL-Helix](https://github.com/contrawork/graphql-helix), here's how you do it:
+
+```ts
+import express from 'express'
+import { getGraphQLParameters, processRequest } from 'graphql-helix'
+import { application } from './application'
+
+const app = express()
+app.use(express.json())
+
+app.use('/graphql', async (req, res) => {
+  const request = {
+    body: req.body,
+    headers: req.headers,
+    method: req.method,
+    query: req.query
+  }
+  const { operationName, query, variables } = getGraphQLParameters(request)
+
+  const result = await processRequest({
+    operationName,
+    query,
+    variables,
+    request,
+    schema: application.schema,
+    execute: application.createExecution(),
+    subscribe: application.createSubscription()
+  })
+
+  result.headers.forEach(({ name, value }) => res.setHeader(name, value))
+  res.status(result.status)
+  res.json(result.payload)
+})
+
+app.listen(port, () => {
+  console.log(`GraphQL server is running on port ${port}.`)
+})
+```
+
+</Tabs.Tab>
+
+<Tabs.Tab>
+If you are using a different server or setup, you can get the custom `execute` and `subscribe` functions from your `Application`, and provide it to your server:
+
+```ts
+import { createApplication } from 'graphql-modules'
+
+const application = createApplication({
+  /* ... */
+})
+
+const schema = application.schema
+const execute = application.createExecution()
+const subscribe = application.createSubscription()
+```
+
+<Callout>
+  In case you are still having issues, you can always [report an issue on a
+  missing
+  integration](https://github.com/graphql-hive/graphql-modules/issues/new), and
+  we'll look into that ;)
+</Callout>
+
+</Tabs.Tab>
+</Tabs>
+
+## Tutorial
+
+If you're interested in a step-by-step tutorial, one of our community members [Godwin Ekuma](https://blog.logrocket.com/author/godwinekuma) wrote an amazing article explaining ["How to modularize GraphQL schema with GraphQL Modules"](https://blog.logrocket.com/graphql-modules-tutorial-how-to-modularize-graphql-schema).

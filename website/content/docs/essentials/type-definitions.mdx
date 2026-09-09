@@ -1,0 +1,89 @@
+---
+title: Type Definitions
+sidebarTitle: Type Definitions (SDL)
+---
+
+GraphQL Schema is built out of `type`s, `enum`s, `interface`s and so on. Defining or extending them in GraphQL Modules is fairly simple.
+
+Just like GraphQL Schema, GraphQL Modules follow the same rules of writing SDL (Schema Definition Language), a single definition per type and multiple extensions. This way we force a good pattern and clarify ownership of each type.
+
+To get started with type definitions in your module, make sure to use `gql` (you can import it from `graphql-modules`) or `parse` (from `graphql`) to convert your string SDL definition into a `DocumentNode` object.
+
+```ts
+import { createModule, gql } from 'graphql-modules'
+
+export const myModule = createModule({
+  id: 'my-module',
+  dirname: __dirname,
+  typeDefs: gql`
+    type Query {
+      user(id: ID!): User
+    }
+
+    type User {
+      id: ID!
+      username: String!
+    }
+  `
+})
+```
+
+<Callout type="warning">
+  Using `string`s could be possible, but we decided to force a better pattern.
+  Using `gql` tag means your IDE can highlight the GraphQL SDL and in general
+  works better with other tools from the GraphQL ecosystem.
+</Callout>
+
+<Callout>
+  **TIP:** `typeDefs` can be a single item or an array of multiple.
+</Callout>
+
+## Storing SDL in `.graphql` Files
+
+If you wish to write your GraphQL SDL in a `.graphql` file, you need to make sure you can load it correctly in a Node.js environment.
+
+To do so, use [`graphql-import-node`](https://github.com/ardatan/graphql-import-node) to make this process easier:
+
+Start by installing it, and follow the installation instructions, based on your environment and your setup.
+
+Now, store your SDL in a `.graphql` file(s), and load it this way, with `import` or `require`:
+
+```ts
+import MyQueryType from './query.type.graphql'
+import { createModule } from 'graphql-modules'
+
+export const myModule = createModule({
+  id: 'my-module',
+  dirname: __dirname,
+  typeDefs: [MyQueryType]
+})
+```
+
+## Dynamically Load SDL Files
+
+If you have too many SDL files, and you wish to load them dynamically, you can use loaders from `@graphql-tools/load-files`!
+
+Start by installing this package:
+
+```sh npm2yarn
+npm i @graphql-tools/load-files
+```
+
+Next, use it to load your files dynamically:
+
+```ts
+import MyQueryType from './query.type.graphql'
+import { createModule } from 'graphql-modules'
+import { loadFilesSync } from '@graphql-tools/load-files'
+import { join } from 'node:path'
+
+export const myModule = createModule({
+  id: 'my-module',
+  dirname: __dirname,
+  typeDefs: loadFilesSync(join(__dirname, './typeDefs/*.graphql'))
+})
+```
+
+<Callout>
+**Note:** the default implementation of `loadFilesSync` is using `fs` module. If you are using `graphql-import-node`, you can add a 2nd parameter with configuration: `{ useRequire: true }`.
+</Callout>

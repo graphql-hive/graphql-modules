@@ -5,8 +5,7 @@
   "license": "MIT",
   "workspaces": [
     "packages/*",
-    "examples/*",
-    "website"
+    "examples/*"
   ],
   "scripts": {
     "prepare": "husky install",
@@ -17,11 +16,10 @@
     "test": "jest --config jest.config.base.js",
     "prerelease": "yarn build",
     "release": "changeset publish",
-    "format": "prettier --cache --ignore-path .gitignore --ignore-path .prettierignore --check --write \"{packages,website}/**/*.{js,jsx,json,css,md,mdx,ts,tsx}\"",
+    "format": "prettier --cache --ignore-path .gitignore --ignore-path .prettierignore --check --write \"packages/**/*.{js,jsx,json,css,md,mdx,ts,tsx}\"",
     "pr": "changeset",
     "lint": "cross-env \"ESLINT_USE_FLAT_CONFIG=false\" eslint \"packages/**/*.{js,jsx,ts,tsx}\"",
-    "benchmark:basic": "NODE_ENV=production ts-node --project tsconfig.app.json benchmark/basic.case.ts",
-    "deploy-website": "cd website && yarn && yarn build && mkdir graphql-modules && mv build/* graphql-modules && mv graphql-modules build"
+    "benchmark:basic": "NODE_ENV=production ts-node --project tsconfig.app.json benchmark/basic.case.ts"
   },
   "devDependencies": {
     "@apollo/federation": "0.38.1",

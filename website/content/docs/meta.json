@@ -1,0 +1,11 @@
+{
+  "pages": [
+    "index",
+    "get-started",
+    "essentials",
+    "di",
+    "advanced",
+    "recipes",
+    "api"
+  ]
+}

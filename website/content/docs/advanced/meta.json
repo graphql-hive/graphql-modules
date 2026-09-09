@@ -1,0 +1,4 @@
+{
+  "pages": ["subscriptions", "middlewares", "execution-context", "lifecycles"],
+  "title": "Advanced"
+}
