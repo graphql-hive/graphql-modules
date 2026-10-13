@@ -3108,6 +3108,13 @@
   dependencies:
     fast-deep-equal "^3.1.3"
 
+"@fastify/merge-json-schemas@^0.2.0":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@fastify/merge-json-schemas/-/merge-json-schemas-0.2.2.tgz#2f461fe22ff405d8fd0d46463871a362559f7cfc"
+  integrity sha512-d/gx9sRbUCVgGRGzma46wLcwiY8noTqO2Nmjg/vbTARxHRE5bdh5PIL8s97Lt1X7ScRWRW52eVYxwIoPwIdVUA==
+  dependencies:
+    dequal "^2.0.3"
+
 "@graphql-tools/batch-execute@^10.0.7":
   version "10.0.7"
   resolved "https://registry.yarnpkg.com/@graphql-tools/batch-execute/-/batch-execute-10.0.7.tgz#20a5b2c9cec281e38d6ed13e8d8f0163aa88d947"
@@ -7892,6 +7899,18 @@ fast-json-stringify@^5.16.1:
     json-schema-ref-resolver "^1.0.1"
     rfdc "^1.2.0"
 
+fast-json-stringify@^7.0.1:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/fast-json-stringify/-/fast-json-stringify-7.1.0.tgz#ca7e0254446af4b51bc49c969af138186818af85"
+  integrity sha512-wAhAQ+es0aH+x5OofdCHlZZFdqwtiM6lpEosaRIwfg271WYeEQ/tPcXdu5vpzlqZpbJ4WNqaW4QR5UjfG4Dc2w==
+  dependencies:
+    "@fastify/merge-json-schemas" "^0.2.0"
+    ajv "^8.12.0"
+    ajv-formats "^3.0.1"
+    fast-uri "^4.0.0"
+    json-schema-ref-resolver "^3.0.0"
+    rfdc "^1.2.0"
+
 fast-levenshtein@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
@@ -7920,6 +7939,11 @@ fast-uri@^3.0.1:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/fast-uri/-/fast-uri-3.1.0.tgz#66eecff6c764c0df9b762e62ca7edcfb53b4edfa"
   integrity sha512-iPeeDKJSWf4IEOasVVrknXpaBV0IApz/gp7S2bb7Z4Lljbl2MGJRqInZiUrQwV16cpzw/D3S5j5Julj/gT52AA==
+
+fast-uri@^4.0.0:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/fast-uri/-/fast-uri-4.2.2.tgz#428437b7ff49d069f1e16be3bdb6597e8cd72cb9"
+  integrity sha512-EwVpUMzLVNOmcWW0zi5G3JJwkopB6XXjnVvNBGfqrMMsVew2hkQWl5e/pe/CfYUeS6jt4cIO2MnamEW7v/7wPw==
 
 fast-url-parser@^1.1.3:
   version "1.1.3"
@@ -8373,13 +8397,14 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.5
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.11.tgz#4183e4e8bf08bb6e05bbb2f7d2e0c8f712ca40e3"
   integrity sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==
 
-graphql-jit@0.8.7:
-  version "0.8.7"
-  resolved "https://registry.yarnpkg.com/graphql-jit/-/graphql-jit-0.8.7.tgz#831b1a4c16b1e29cc8ed9d171f33a7da4bce2821"
-  integrity sha512-KGzCrsxQPfEiXOUIJCexWKiWF6ycjO89kAO6SdO8OWRGwYXbG0hsLuTnbFfMq0gj7d7/ib/Gh7jtst7FHZEEjw==
+
+graphql-jit@^0.8.10:
+  version "0.8.10"
+  resolved "https://registry.yarnpkg.com/graphql-jit/-/graphql-jit-0.8.10.tgz#58d0084f9a79c9ac1c6cc385161dac351f6ad5bc"
+  integrity sha512-vvjth/yqAW+zhPYXhNVntJGTR2j9O0Z+/f+j6Jyr5AxlzOMh7jglW5SLfUGxkstewrUSniwUDvod8jcm3zz8gA==
   dependencies:
     "@graphql-typed-document-node/core" "^3.2.0"
-    fast-json-stringify "^5.16.1"
+    fast-json-stringify "^7.0.1"
     generate-function "^2.3.1"
     lodash.memoize "^4.1.2"
     lodash.merge "4.6.2"
@@ -9338,6 +9363,13 @@ json-schema-ref-resolver@^1.0.1:
   integrity sha512-EJAj1pgHc1hxF6vo2Z3s69fMjO1INq6eGHXZ8Z6wCQeldCuwxGK9Sxf4/cScGn3FZubCVUehfWtcDM/PLteCQw==
   dependencies:
     fast-deep-equal "^3.1.3"
+
+json-schema-ref-resolver@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/json-schema-ref-resolver/-/json-schema-ref-resolver-3.0.1.tgz#5ab9a5aa62ce607eee619fa420b3ee40a17ae0da"
+  integrity sha512-w+HwgljXpVwZ3IidoUR1qPZxSOQ+NRQWuVe6a5pe8XbHsNZE4UAwVPUvzZagn7yBKbJtt6UJnRFYbNTRPZI45Q==
+  dependencies:
+    dequal "^2.0.3"
 
 json-schema-traverse@^0.4.1:
   version "0.4.1"
