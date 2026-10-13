@@ -25,6 +25,7 @@ import { createApplication } from '../application/application';
 import { ApplicationConfig } from '../application/types';
 import { MockedModule, Module, ModuleConfig } from '../module/types';
 import { createModule } from '../module/module';
+import { hasOwnProperty } from '../shared/utils';
 
 type TestModuleConfig = {
   replaceExtensions?: boolean;
@@ -429,7 +430,7 @@ function hasPropValue<T extends Record<string, any>, K extends string>(
   obj: T,
   prop: K
 ): obj is T {
-  return Object.prototype.hasOwnProperty.call(obj, prop) && obj[prop];
+  return hasOwnProperty(obj, prop) && obj[prop];
 }
 
 function isRootType(typeName: string) {
