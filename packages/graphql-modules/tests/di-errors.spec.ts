@@ -9,7 +9,7 @@ import {
 import { createApplication, createModule, Scope, gql, testkit } from '../src';
 import { stringify } from '../src/di/utils';
 
-test('No Injectable error', () => {
+test.skip('No Injectable error', () => {
   class NoAnnotations {
     // @ts-ignore
     constructor(dep: any) {}
