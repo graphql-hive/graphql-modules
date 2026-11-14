@@ -1,7 +1,7 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { mergeDeepWith } from 'ramda';
 import { ModuleMetadata } from './../module/metadata';
-import { isDefined } from './utils';
+import { hasOwnProperty, isDefined } from './utils';
 import { ExtraMiddlewareError, useLocation } from './errors';
 
 export type Next<T = any> = () => Promise<T>;
@@ -125,7 +125,7 @@ export function validateMiddlewareMap(
   const exists = checkExistence(metadata);
 
   for (const typeName in middlewareMap.types) {
-    if (middlewareMap.types.hasOwnProperty(typeName)) {
+    if (hasOwnProperty(middlewareMap.types,typeName)) {
       const typeMiddlewareMap = middlewareMap[typeName];
 
       if (!exists.type(typeName)) {
@@ -136,7 +136,7 @@ export function validateMiddlewareMap(
       }
 
       for (const fieldName in typeMiddlewareMap[typeName]) {
-        if (typeMiddlewareMap[typeName].hasOwnProperty(fieldName)) {
+        if (hasOwnProperty(typeMiddlewareMap[typeName],fieldName)) {
           if (!exists.field(typeName, fieldName)) {
             throw new ExtraMiddlewareError(
               `Cannot apply a middleware to non existing "${typeName}.${fieldName}" type.field`,
