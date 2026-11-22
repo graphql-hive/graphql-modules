@@ -10,8 +10,13 @@ import {
 import { invalidProviderError, noAnnotationError } from './errors';
 import { Key } from './registry';
 import { resolveForwardRef } from './forward-ref';
-import { readInjectableMetadata, InjectableParamMetadata } from './metadata';
+import {
+  readInjectableMetadata,
+  InjectableParamMetadata,
+  hasInjectableMetadata,
+} from './metadata';
 import { ReflectiveInjector } from './injector';
+import { Injectable } from './decorators';
 
 export type NormalizedProvider<T = any> =
   | ValueProvider<T>
@@ -127,6 +132,12 @@ function resolveFactory(provider: NormalizedProvider): ResolvedFactory {
 
   if (isClassProvider(provider)) {
     const useClass = resolveForwardRef(provider.useClass);
+
+    // Support ES6 (no TypeScript)
+    // Sets params coming from static parameters getter
+    if (!hasInjectableMetadata(useClass)) {
+      Injectable(provider)(useClass);
+    }
 
     factoryFn = makeFactory(useClass);
     resolvedDeps = dependenciesFor(useClass);
