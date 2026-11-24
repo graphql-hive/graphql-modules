@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { describe, test, expect } from 'vitest';
 import { mergeResolvers } from '@graphql-tools/merge';
 import { buildSubgraphSchema } from '@apollo/federation';
 import { createApplication, createModule, gql } from '../src';

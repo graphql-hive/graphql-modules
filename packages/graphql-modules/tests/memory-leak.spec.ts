@@ -18,9 +18,10 @@
  * and asserting that GC reclaims it.
  *
  * Run with:
- *   NODE_OPTIONS=--expose-gc yarn jest tests/memory-leak.spec.ts
+ *   yarn test packages/graphql-modules/tests/memory-leak.spec.ts (`--expose-gc` is set in `vitest.config.ts`)
  */
 import 'reflect-metadata';
+import { test, expect, beforeAll, afterEach } from 'vitest';
 import { createApplication, createModule, gql, testkit } from '../src';
 
 // 5 MB payload — large enough so we can spot it easily in memory measurements.
@@ -64,7 +65,7 @@ beforeAll(() => {
   if (typeof (global as { gc?: () => void }).gc !== 'function') {
     throw new Error(
       'This test requires V8 GC to be exposed. Run with:\n' +
-        '  NODE_OPTIONS=--expose-gc yarn jest tests/memory-leak.spec.ts'
+        '  yarn test packages/graphql-modules/tests/memory-leak.spec.ts (`--expose-gc` is set in `vitest.config.ts`)'
     );
   }
 });

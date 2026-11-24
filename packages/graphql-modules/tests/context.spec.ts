@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { test, expect, vi } from 'vitest';
 import {
   createApplication,
   createModule,
@@ -11,10 +12,10 @@ import {
 } from '../src';
 
 test('Global context and module context should be reachable', async () => {
-  const constructorSpy = jest.fn();
-  const providerContext = jest.fn();
-  const resolverContext = jest.fn();
-  const middlewareContext = jest.fn();
+  const constructorSpy = vi.fn();
+  const providerContext = vi.fn();
+  const resolverContext = vi.fn();
+  const middlewareContext = vi.fn();
 
   @Injectable({
     scope: Scope.Operation,

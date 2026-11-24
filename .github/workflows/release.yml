@@ -23,7 +23,7 @@ jobs:
     uses: the-guild-org/shared-config/.github/workflows/release-stable.yml@main
     with:
       releaseScript: release
-      nodeVersion: 24
+      nodeVersion: 26
     secrets:
       githubToken: ${{ secrets.GITHUB_TOKEN }}
 
@@ -33,6 +33,6 @@ jobs:
     with:
       npmTag: alpha
       buildScript: build
-      nodeVersion: 24
+      nodeVersion: 26
     secrets:
       githubToken: ${{ secrets.GITHUB_TOKEN }}

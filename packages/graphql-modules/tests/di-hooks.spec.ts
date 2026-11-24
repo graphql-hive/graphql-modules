@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { test, expect, vi } from 'vitest';
 import {
   createApplication,
   createModule,
@@ -13,7 +14,7 @@ const posts = ['Foo', 'Bar'];
 
 test('OnDestroy hook', async () => {
   const spies = {
-    onDestroy: jest.fn(),
+    onDestroy: vi.fn(),
   };
 
   @Injectable({

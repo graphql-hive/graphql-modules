@@ -5,7 +5,6 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node --project ../../tsconfig.app.json ./src/index.ts",
-    "test": "jest"
+    "start": "ts-node --project ../../tsconfig.app.json ./src/index.ts"
   }
 }

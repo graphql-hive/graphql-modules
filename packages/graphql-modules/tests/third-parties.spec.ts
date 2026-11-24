@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { describe, test, expect, vi } from 'vitest';
 import {
   createApplication,
   createModule,
@@ -10,7 +11,7 @@ import { ApolloServer } from 'apollo-server-express';
 
 describe('Apollo Server', () => {
   test('cacheControl available in info object', async () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     const mod = createModule({
       id: 'test',
       typeDefs: gql`
@@ -55,8 +56,8 @@ describe('Apollo Server', () => {
   });
 
   test('createApolloExecutor should instantiate operation-scoped provider once per many fields', async () => {
-    const constructor = jest.fn();
-    const log = jest.fn();
+    const constructor = vi.fn();
+    const log = vi.fn();
 
     @Injectable({
       scope: Scope.Operation,

@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { test, expect, vi } from 'vitest';
 import {
   createApplication,
   createModule,
@@ -17,9 +18,9 @@ const posts = ['Foo', 'Bar'];
 
 test('ExecutionContext on module level provider', async () => {
   const spies = {
-    posts: jest.fn(),
-    connection: jest.fn(),
-    connectionId: jest.fn(),
+    posts: vi.fn(),
+    connection: vi.fn(),
+    connectionId: vi.fn(),
   };
 
   @Injectable({
@@ -131,9 +132,9 @@ test('ExecutionContext on module level provider', async () => {
 
 test('ExecutionContext on application level provider', async () => {
   const spies = {
-    posts: jest.fn(),
-    connection: jest.fn(),
-    connectionId: jest.fn(),
+    posts: vi.fn(),
+    connection: vi.fn(),
+    connectionId: vi.fn(),
   };
 
   @Injectable({
@@ -243,8 +244,8 @@ test('ExecutionContext on application level provider', async () => {
 
 test('ExecutionContext on module level global provider', async () => {
   const spies = {
-    posts: jest.fn(),
-    executionContext: jest.fn(),
+    posts: vi.fn(),
+    executionContext: vi.fn(),
   };
 
   @Injectable({
@@ -328,8 +329,8 @@ test('ExecutionContext on module level global provider', async () => {
 
 test('ExecutionContext on application level global provider', async () => {
   const spies = {
-    posts: jest.fn(),
-    executionContext: jest.fn(),
+    posts: vi.fn(),
+    executionContext: vi.fn(),
   };
 
   @Injectable({
@@ -413,8 +414,8 @@ test('ExecutionContext on application level global provider', async () => {
 
 test('accessing a singleton provider with execution context in another singleton provider', async () => {
   const spies = {
-    foo: jest.fn(),
-    bar: jest.fn(),
+    foo: vi.fn(),
+    bar: vi.fn(),
   };
 
   const Name = new InjectionToken<string>('name');
@@ -504,9 +505,9 @@ test('accessing a singleton provider with execution context in another singleton
 
 test('accessing a singleton provider with execution context in another singleton provider (parallel requests)', async () => {
   const spies = {
-    foo: jest.fn(),
-    bar: jest.fn(),
-    baz: jest.fn(),
+    foo: vi.fn(),
+    bar: vi.fn(),
+    baz: vi.fn(),
   };
 
   const Name = new InjectionToken<Promise<string>>('name');
@@ -638,9 +639,9 @@ test('accessing a singleton provider with execution context in another singleton
 
 test('accessing a singleton provider with execution context in another singleton provider (parallel requests and graphql-jit)', async () => {
   const spies = {
-    foo: jest.fn(),
-    bar: jest.fn(),
-    baz: jest.fn(),
+    foo: vi.fn(),
+    bar: vi.fn(),
+    baz: vi.fn(),
   };
 
   const Name = new InjectionToken<Promise<string>>('name');

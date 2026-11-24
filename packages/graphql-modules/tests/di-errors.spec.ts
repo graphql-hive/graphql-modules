@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { test, expect, vi } from 'vitest';
 import {
   ReflectiveInjector,
   InjectionToken,
@@ -64,8 +65,8 @@ test('Circular dependencies error', () => {
 });
 
 test('fail on circular dependencies', async () => {
-  const fooSpy = jest.fn();
-  const barSpy = jest.fn();
+  const fooSpy = vi.fn();
+  const barSpy = vi.fn();
 
   @Injectable({
     scope: Scope.Singleton,
