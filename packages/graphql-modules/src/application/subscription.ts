@@ -1,9 +1,9 @@
 import {
   DocumentNode,
+  ExecutionArgs,
   GraphQLFieldResolver,
   GraphQLSchema,
   subscribe,
-  SubscriptionArgs,
 } from 'graphql';
 import { Maybe } from '../shared/types';
 import {
@@ -25,7 +25,7 @@ export function subscriptionCreator({
     const subscribeFn = options?.subscribe || subscribe;
 
     return (
-      argsOrSchema: SubscriptionArgs | GraphQLSchema,
+      argsOrSchema: ExecutionArgs | GraphQLSchema,
       document?: DocumentNode,
       rootValue?: any,
       contextValue?: any,
@@ -41,22 +41,23 @@ export function subscriptionCreator({
         context: InternalAppContext;
         ɵdestroy: () => void;
       }) {
-        const subscriptionArgs: SubscriptionArgs =
-          isNotSchema<SubscriptionArgs>(argsOrSchema)
-            ? {
-                ...argsOrSchema,
-                contextValue: context,
-              }
-            : {
-                schema: argsOrSchema,
-                document: document!,
-                rootValue,
-                contextValue: context,
-                variableValues,
-                operationName,
-                fieldResolver,
-                subscribeFieldResolver,
-              };
+        const subscriptionArgs: ExecutionArgs = isNotSchema<ExecutionArgs>(
+          argsOrSchema
+        )
+          ? {
+              ...argsOrSchema,
+              contextValue: context,
+            }
+          : {
+              schema: argsOrSchema,
+              document: document!,
+              rootValue,
+              contextValue: context,
+              variableValues,
+              operationName,
+              fieldResolver,
+              subscribeFieldResolver,
+            };
 
         let isIterable = false;
 
@@ -87,7 +88,7 @@ export function subscriptionCreator({
       }
 
       return contextBuilder(
-        isNotSchema<SubscriptionArgs>(argsOrSchema)
+        isNotSchema<ExecutionArgs>(argsOrSchema)
           ? argsOrSchema.contextValue
           : contextValue
       ).runWithContext(perform);

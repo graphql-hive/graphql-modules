@@ -11,4 +11,4 @@ jobs:
     uses: the-guild-org/shared-config/.github/workflows/ci-node-matrix.yml@main
     with:
       script: 'yarn build && yarn benchmark:basic'
-      nodeVersions: '[18,20,22,23]'
+      nodeVersions: '[22,24,26]'

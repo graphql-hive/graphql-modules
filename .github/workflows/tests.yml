@@ -26,8 +26,8 @@ jobs:
     strategy:
       matrix:
         graphql_version:
-          - 15
           - 16
+          - 17
     steps:
       - name: checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -35,21 +35,18 @@ jobs:
         uses: the-guild-org/shared-config/setup@main
         with:
           nodeVersion: 24
-      - name: Use GraphQL v${{matrix.graphql_version}}
-        run: node ./scripts/match-graphql.js ${{matrix.graphql_version}} && yarn install --no-frozen-lockfile
       - name: Type Check
-        run: yarn ts:check
+        # graphql v17 is installed as `graphql`, v16 as `graphql-16` (npm alias)
+        run: yarn ${{ matrix.graphql_version == 16 && 'ts:check:graphql-16' || 'ts:check' }}
 
   test:
-    name: Unit Test on Node ${{matrix.node-version}} (${{matrix.os}}) and GraphQL v${{matrix.graphql_version}}
+    # every test runs against all supported graphql versions, see `jest.config.js`
+    name: Unit Test on Node ${{matrix.node-version}} (${{matrix.os}})
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
         os: [ubuntu-latest] # remove windows to speed up the tests
         node-version: [22, 24]
-        graphql_version:
-          - 15
-          - 16
     steps:
       - name: checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -57,15 +54,13 @@ jobs:
         uses: the-guild-org/shared-config/setup@main
         with:
           nodeVersion: ${{matrix.node-version}}
-      - name: Use GraphQL v${{matrix.graphql_version}}
-        run: node ./scripts/match-graphql.js ${{matrix.graphql_version}} && yarn install --no-frozen-lockfile
       - name: Cache Jest
         uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5
         with:
           path: .cache/jest
-          key: ${{ runner.os }}-${{matrix.node-version}}-${{matrix.graphql_version}}-jest-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-${{matrix.node-version}}-jest-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-${{matrix.node-version}}-${{matrix.graphql_version}}-jest-
+            ${{ runner.os }}-${{matrix.node-version}}-jest-
       - name: Test
         run: yarn test --ci
         env:
