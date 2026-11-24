@@ -1,5 +1,15 @@
 # graphql-modules
 
+## 4.0.0
+
+### Major Changes
+
+- [#2690](https://github.com/graphql-hive/graphql-modules/pull/2690) [`1f875d4`](https://github.com/graphql-hive/graphql-modules/commit/1f875d4828d52851e7a7466e85354d6f31d9369e) Thanks [@n1ru4l](https://github.com/n1ru4l)! - Add support for `graphql@17`, drop support for `graphql@14` and `graphql@15` and require Node.js `>=22.18.0`.
+  - `graphql` peer dependency is now `^16.0.0 || ^17.0.0`
+  - `@graphql-tools/schema` updated to `^11.0.9` and `@graphql-tools/wrap` to `^12.0.0` (requires Node.js `>=22.18`)
+  - `ramda` dependency removed
+  - `engines.node` set to `>=22.18.0`; Node.js 18 and 20 are no longer supported
+
 ## 3.1.3
 
 ### Patch Changes
