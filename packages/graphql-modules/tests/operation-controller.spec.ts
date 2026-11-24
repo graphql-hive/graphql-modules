@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { test, expect, vi } from 'vitest';
 import {
   createApplication,
   createModule,
@@ -83,7 +84,7 @@ test('should share context and injection', async () => {
 });
 
 test('execution should not destroy operation', async () => {
-  const destroySpy = jest.fn();
+  const destroySpy = vi.fn();
 
   @Injectable({ scope: Scope.Operation })
   class Data implements OnDestroy {
@@ -147,7 +148,7 @@ test('execution should not destroy operation', async () => {
 });
 
 test('autoDestroy enabled should destroy operation after execution', async () => {
-  const destroySpy = jest.fn();
+  const destroySpy = vi.fn();
 
   @Injectable({ scope: Scope.Operation })
   class Data implements OnDestroy {

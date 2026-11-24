@@ -1,12 +1,12 @@
 import { InjectionToken, FactoryProvider, Scope } from 'graphql-modules';
-import { createPubSub, PubSub as TPubSub } from '@graphql-yoga/node';
+import { createPubSub, PubSub as TPubSub } from 'graphql-yoga';
 import { Post } from './types';
 
 type PubSub = TPubSub<{
   POST_ADDED: [
     {
       postAdded: Post;
-    }
+    },
   ];
 }>;
 

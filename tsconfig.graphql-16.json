@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "incremental": false,
+    "paths": {
+      "graphql-modules": ["packages/graphql-modules/src/index.ts"],
+      "#async-context": ["packages/graphql-modules/src/async-context"],
+      "graphql": ["node_modules/graphql-16"],
+      "graphql/*": ["node_modules/graphql-16/*"]
+    }
+  }
+}

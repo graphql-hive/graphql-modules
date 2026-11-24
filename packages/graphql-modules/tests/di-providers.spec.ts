@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { test, expect, vi } from 'vitest';
 import {
   createApplication,
   createModule,
@@ -25,17 +26,17 @@ type GraphQLModulesGlobalContext = GraphQLModules.GlobalContext;
 
 test('general test', async () => {
   const spies = {
-    logger: jest.fn(),
+    logger: vi.fn(),
     posts: {
-      moduleId: jest.fn(),
-      test: jest.fn(),
-      postService: jest.fn(),
-      eventService: jest.fn(),
+      moduleId: vi.fn(),
+      test: vi.fn(),
+      postService: vi.fn(),
+      eventService: vi.fn(),
     },
     comments: {
-      moduleId: jest.fn(),
-      test: jest.fn(),
-      commentsService: jest.fn(),
+      moduleId: vi.fn(),
+      test: vi.fn(),
+      commentsService: vi.fn(),
     },
   };
 
@@ -227,7 +228,7 @@ test('general test', async () => {
 });
 
 test('useFactory with dependencies', async () => {
-  const logSpy = jest.fn();
+  const logSpy = vi.fn();
 
   @Injectable({
     scope: Scope.Singleton,
@@ -335,7 +336,7 @@ test('useFactory with dependencies', async () => {
 
 test('Use @Inject decorator in constructor', async () => {
   const request = new Object();
-  const requestSpy = jest.fn();
+  const requestSpy = vi.fn();
 
   @Injectable({ scope: Scope.Operation })
   class Auth {
@@ -383,7 +384,7 @@ test('Use @Inject decorator in constructor', async () => {
 
 test('Use useFactory with deps', async () => {
   const request = new Object();
-  const requestSpy = jest.fn();
+  const requestSpy = vi.fn();
   const REQUEST = new InjectionToken('request');
 
   @Injectable({ scope: Scope.Operation })
@@ -451,8 +452,8 @@ test('Application allows injector access', () => {
 });
 
 test('Operation scoped provider should be created once per GraphQL Operation', async () => {
-  const constructorSpy = jest.fn();
-  const loadSpy = jest.fn();
+  const constructorSpy = vi.fn();
+  const loadSpy = vi.fn();
 
   @Injectable({
     scope: Scope.Operation,
@@ -543,8 +544,8 @@ test('Operation scoped provider should be created once per GraphQL Operation', a
 });
 
 test('Operation scoped provider should be created once per GraphQL Operation (Apollo Server)', async () => {
-  const constructorSpy = jest.fn();
-  const loadSpy = jest.fn();
+  const constructorSpy = vi.fn();
+  const loadSpy = vi.fn();
 
   @Injectable({
     scope: Scope.Operation,
@@ -638,7 +639,7 @@ test('Operation scoped provider should be created once per GraphQL Operation (Ap
 });
 
 test('Singleton scoped provider should be created once', async () => {
-  const constructorSpy = jest.fn();
+  const constructorSpy = vi.fn();
 
   @Injectable({
     scope: Scope.Singleton,
@@ -783,7 +784,7 @@ test('Global Token provided by one module should be accessible by other modules 
 
 test('Global Token (module) should use other local tokens (operation)', async () => {
   const LogLevel = new InjectionToken<string>('log-level');
-  const logger = jest.fn();
+  const logger = vi.fn();
 
   @Injectable({
     scope: Scope.Operation,
@@ -967,7 +968,7 @@ test('Global Token provided by one module should be accessible by other modules 
 
 test('Global Token (module) should use other local tokens (singleton)', async () => {
   const LogLevel = new InjectionToken<string>('log-level');
-  const logger = jest.fn();
+  const logger = vi.fn();
 
   @Injectable({
     scope: Scope.Singleton,
@@ -1069,9 +1070,9 @@ test('Global Token (module) should use other local tokens (singleton)', async ()
 
 test('instantiate all singleton providers', async () => {
   const spies = {
-    logger: jest.fn(),
-    data: jest.fn(),
-    appData: jest.fn(),
+    logger: vi.fn(),
+    data: vi.fn(),
+    appData: vi.fn(),
   };
 
   @Injectable()
@@ -1151,9 +1152,9 @@ test('instantiate all singleton providers', async () => {
 
 test('instantiate all singleton and global providers', async () => {
   const spies = {
-    logger: jest.fn(),
-    data: jest.fn(),
-    appData: jest.fn(),
+    logger: vi.fn(),
+    data: vi.fn(),
+    appData: vi.fn(),
   };
 
   @Injectable()
@@ -1248,8 +1249,8 @@ test('instantiate all singleton and global providers', async () => {
 });
 
 test('instantiate operation-scoped provider once per many fields', async () => {
-  const constructor = jest.fn();
-  const log = jest.fn();
+  const constructor = vi.fn();
+  const log = vi.fn();
 
   @Injectable({
     scope: Scope.Operation,

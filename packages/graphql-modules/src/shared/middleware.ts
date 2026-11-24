@@ -1,5 +1,4 @@
 import { GraphQLResolveInfo } from 'graphql';
-import { mergeDeepWith } from 'ramda';
 import { ModuleMetadata } from './../module/metadata';
 import { isDefined } from './utils';
 import { ExtraMiddlewareError, useLocation } from './errors';
@@ -78,20 +77,41 @@ export function mergeMiddlewareMaps(
   app: MiddlewareMap,
   mod: MiddlewareMap
 ): MiddlewareMap {
-  const merge = (left: any, right: any): any => {
-    return mergeDeepWith(
-      (l, r) => {
-        if (Array.isArray(l)) {
-          return l.concat(r || []);
-        }
+  return mergeDeep(app, mod);
+}
 
-        return merge(l, r);
-      },
-      left,
-      right
-    );
-  };
-  return merge(app, mod);
+function isPlainObject(value: unknown): value is Record<string, any> {
+  return Object.prototype.toString.call(value) === '[object Object]';
+}
+
+/**
+ * Deeply merges two middleware maps.
+ * Nested objects are merged recursively, arrays of middlewares are concatenated
+ * (left first) and for any other value the right side wins.
+ */
+function mergeDeep(left: any, right: any): any {
+  const result: Record<string, any> = { ...left };
+
+  for (const key of Object.keys(right)) {
+    const r = right[key];
+
+    if (!Object.prototype.hasOwnProperty.call(left, key)) {
+      result[key] = r;
+      continue;
+    }
+
+    const l = left[key];
+
+    if (isPlainObject(l) && isPlainObject(r)) {
+      result[key] = mergeDeep(l, r);
+    } else if (Array.isArray(l)) {
+      result[key] = l.concat(r || []);
+    } else {
+      result[key] = r;
+    }
+  }
+
+  return result;
 }
 
 function pickMiddlewares(path: string[], middlewareMap: MiddlewareMap) {

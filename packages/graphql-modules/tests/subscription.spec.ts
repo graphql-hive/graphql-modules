@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { test, expect, vi } from 'vitest';
 import {
   createApplication,
   createModule,
@@ -12,7 +13,7 @@ import { isAsyncIterable } from '../src/shared/utils';
 
 test('Operation-Scope provider instantiated on every subscription', async () => {
   const spies = {
-    posts: jest.fn(),
+    posts: vi.fn(),
   };
 
   @Injectable({

@@ -1,13 +1,18 @@
 import 'reflect-metadata';
-import { createServer } from '@graphql-yoga/node';
+import { createServer } from 'node:http';
+import { createYoga } from 'graphql-yoga';
 import { useGraphQLModules } from '@envelop/graphql-modules';
 import { app } from './app';
 
-const server = createServer({
+const yoga = createYoga({
   plugins: [useGraphQLModules(app)],
 });
 
-server.start().then(() => {
+const server = createServer(yoga);
+
+server.listen(4000, () => {
   // tslint:disable-next-line: no-console
-  console.info(`🚀 Server ready at http://localhost:4000/graphql`);
+  console.info(
+    `🚀 Server ready at http://localhost:4000${yoga.graphqlEndpoint}`
+  );
 });

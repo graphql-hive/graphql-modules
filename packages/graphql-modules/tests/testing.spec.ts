@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { describe, test, expect } from 'vitest';
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { concatAST } from 'graphql';
 import { RESTDataSource } from 'apollo-datasource-rest';

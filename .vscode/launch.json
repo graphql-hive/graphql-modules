@@ -5,50 +5,48 @@
       "name": "Run Tests",
       "type": "node",
       "request": "launch",
-      "runtimeArgs": ["${workspaceRoot}/node_modules/.bin/jest", "--runInBand"],
+      "runtimeArgs": ["${workspaceRoot}/node_modules/.bin/vitest", "--run"],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "port": 9229
+      "internalConsoleOptions": "neverOpen"
     },
     {
       "name": "Debug Tests",
       "type": "node",
       "request": "launch",
       "runtimeArgs": [
+        "${workspaceRoot}/node_modules/.bin/vitest",
+        "--run",
         "--inspect-brk",
-        "${workspaceRoot}/node_modules/.bin/jest",
-        "--runInBand"
+        "--no-file-parallelism"
       ],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "port": 9229
+      "internalConsoleOptions": "neverOpen"
     },
     {
       "name": "Run Test for Current File",
       "type": "node",
       "request": "launch",
       "runtimeArgs": [
-        "${workspaceRoot}/node_modules/.bin/jest",
-        "--runInBand",
-        "${fileBasenameNoExtension}"
+        "${workspaceRoot}/node_modules/.bin/vitest",
+        "--run",
+        "${relativeFile}"
       ],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "port": 9229
+      "internalConsoleOptions": "neverOpen"
     },
     {
       "name": "Debug Test for Current File",
       "type": "node",
       "request": "launch",
       "runtimeArgs": [
+        "${workspaceRoot}/node_modules/.bin/vitest",
+        "--run",
         "--inspect-brk",
-        "${workspaceRoot}/node_modules/.bin/jest",
-        "--runInBand",
-        "${fileBasenameNoExtension}"
+        "--no-file-parallelism",
+        "${relativeFile}"
       ],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "port": 9229
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }

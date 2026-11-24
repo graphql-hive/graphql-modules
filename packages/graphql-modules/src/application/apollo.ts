@@ -98,7 +98,7 @@ export function apolloSchemaCreator({
             contextValue: input.context,
             rootValue: input.rootValue,
             operationName: input.operationName,
-          });
+          }) as any;
         }
 
         // Create an execution context and run within it

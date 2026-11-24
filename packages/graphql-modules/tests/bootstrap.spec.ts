@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { describe, test, it, expect } from 'vitest';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { createApplication, createModule, testkit, gql } from '../src';
 import { NonDocumentNodeError } from '../src/shared/errors';

@@ -1,3 +1,4 @@
+import { describe, test, it, expect } from 'vitest';
 import { compose, Middleware } from '../src/shared/middleware';
 
 function wait(ms: number) {
